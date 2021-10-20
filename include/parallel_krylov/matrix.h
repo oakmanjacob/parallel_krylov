@@ -1,12 +1,13 @@
 #include <cassert>
 #include <vector>
+#include <iterator>
 
 template <typename V> class Matrix {
+public:
     V _data[][];
     size_t _row_count;
     size_t _col_count;
 
-public:
     Matrix(size_t row_count, size_t col_count) {
         _row_count = row_count;
         _col_count = col_count;
@@ -26,8 +27,8 @@ public:
     }
 
     Matrix(Matrix<V> other) {
-        _row_count = other.get_row_count();
-        _col_count = other.get_col_count();
+        _row_count = other._row_count();
+        _col_count = other._col_count();
         _data = new V[_row_count][_col_count]
 
         for (int i = 0; i < _row_count; i++) {
@@ -45,12 +46,8 @@ public:
         delete[] _data;
     }
 
-    size_t get_row_count() {
-        return _row_count;
-    }
+    Matrix& operator== (Matrix &other) {
 
-    size_t get_col_count() {
-        return _col_count;
     }
 };
 

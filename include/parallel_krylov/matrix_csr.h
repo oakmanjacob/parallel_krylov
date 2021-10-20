@@ -1,16 +1,25 @@
 #include <cassert>
 #include <vector>
 
+#include "parallel_krylov/matrix.h"
+
 template <typename V> class MatrixCSR {
+public:
     std::vector<V> _values;
     std::vector<V> _col_indexes;
     std::vector<size_t> _row_pointers;
     size_t _col_count;
 
-public:
     MatrixCSR(size_t row_count, size_t col_count) {
         _col_count = col_count;
         _row_pointers.resize(row_count);
+    }
+
+    MatrixCSR(Matrix<V> other) {
+        _col_count = other.get_col_count();
+        _row_pointers.resize(other.get_row_count());
+
+
     }
 
     ~MatrixCSR() {}

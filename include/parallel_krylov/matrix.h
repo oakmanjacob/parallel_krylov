@@ -45,10 +45,6 @@ public:
 
         delete[] _data;
     }
-
-    Matrix& operator== (Matrix &other) {
-
-    }
 };
 
 /**
@@ -62,7 +58,7 @@ public:
 template <typename V> std::vector<V>& operator* (const Matrix<V> &mat, const std::vector<V> &vec) {
     assert(vec.size() == mat._col_count);
 
-    std:vector<V> result(mat._row_count);
+    std::vector<V> result(mat._row_count);
     for (size_t i = 0; i < mat._row_count; i++) {
         for (size_t j = 0; j < mat._col_count; j++) {
             result[i] += mat[i][j] * vec[j];

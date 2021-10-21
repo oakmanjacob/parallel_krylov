@@ -1,0 +1,1 @@
+docker run --privileged --rm -v $(pwd):/root --name jco222krylovenv -it jco222krylov

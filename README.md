@@ -39,7 +39,7 @@ $> docker build -t jco222krylov .
 
 ### Run Docker Container
 ```bash
-$> docker run --privileged --rm -v ~/path/to/repo:/root --name jco222krylovenv -it jco222krylov
+$> docker run --privileged --rm -v $(pwd):/root --name jco222krylovenv -it jco222krylov
 ```
 
 ### Build the codebase

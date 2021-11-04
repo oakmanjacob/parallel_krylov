@@ -59,7 +59,7 @@ void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vecto
 }
 
 /**
- * @brief 
+ * @brief Used to calculate out += Ax with an input matrix which is transposed
  * 
  * @param mat 
  * @param m 
@@ -67,16 +67,16 @@ void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vecto
  * @param vec 
  * @param out 
  */
-void matvecadd_emplace(const vector<vector<complex<double>>> &mat, const size_t m, const size_t n, vector<complex<double>> &vec, vector<complex<double>> &out) {
+void matvecaddT_emplace(const vector<vector<complex<double>>> &mat, const size_t m, const size_t n, vector<complex<double>> &vec, vector<complex<double>> &out) {
     assert(m > 0 && n > 0);
     assert(mat.size() >= n);
     assert(mat[0].size() >= m);
     assert(vec.size() >= n);
 
     out.resize(m);
-    for (size_t i = 0; i < m; i++) {
-        for (size_t j = 0; j < n; j++) {
-            out[i] += mat[j][i] * vec[j];
+    for (size_t i = 0; i < n; i++) {
+        for (size_t j = 0; j < m; j++) {
+            out[j] += mat[i][j] * vec[i];
         }
     }
 }
@@ -259,7 +259,7 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
     // Normalize Tolerance
     tol = norm(b)*tol;
 
-    vector<vector<complex<double>>> V(x0.size());
+    vector<vector<complex<double>>> V(restart + 1);
     vector<vector<complex<double>>> H(restart + 1);
     for (size_t i = 0; i < restart + 1; i++) {
         H[i].resize(restart);
@@ -335,14 +335,14 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
             vector<complex<double>> y;
             backsub(H, i+1, s, y);
             // x = x + V(:,1:i)*y;
-            matvecadd_emplace(V, V.size(), i+1, y, x);
+            matvecaddT_emplace(V, x0.size(), i+1, y, x);
         }
         else {
             // y = H(1:m,1:m) \ s(1:m);
             vector<complex<double>> y;
             backsub(H, restart, s, y);
             // x = x + V(:,1:m)*y;
-            matvecadd_emplace(V, V.size(), restart, y, x);
+            matvecaddT_emplace(V, x0.size(), restart, y, x);
             i = i - 1;
         }
 

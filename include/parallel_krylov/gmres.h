@@ -365,3 +365,24 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
     // Eleminate excess size in residual
     r_nrm.resize(iter);
 }
+
+struct GMRES_In {
+    MatrixCSR<complex<double>> A;
+    vector<complex<double>> b;
+    vector<complex<double>> x0;
+    double tol;
+    size_t max_it;
+    size_t restart;
+};
+
+struct GMRES_Out {
+    vector<complex<double>> x;
+    vector<complex<double>> r;
+    vector<double> r_nrm;
+    size_t iter;
+    bool &converged;
+};
+
+void gmres(GMRES_In &in, GMRES_Out &out) {
+    gmres(in.A, in.b, in.x0, in.tol, in.max_it, in.restart, out.x, out.r, out.r_nrm, out.iter, out.converged);
+}

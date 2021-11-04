@@ -6,26 +6,26 @@ For CSE 398: Iterative Methods for Large Sparse Linear Systems
 This represents a semester long project for a seminar at Lehigh University. The goal of this project is to implement and examine both sequential and parallel versions of several Krylov methods, starting with GMRES. These will be compared for use in solving generated Convection-Diffusion problems.
 
 ### Implementation Plan
-0. Set up a repository to store the project files and create a docker image which can ensure a stable build environment.
-1. Implement infrastructure for the project including writing classes for storing sparse matrices using the Compressed Sparse Row and Compressed Diagonal formats. Part of this project will be examining how these and other datastructures can affect performance.
-2. Test that the infrastructure is working correctly using dummy data.
-3. Implement a generator for toy Convection-Diffusion systems and test that they work correctly.
-3. Implement a sequential version of GMRES based on the existing code from Dr. Saad. This may require adding and testing additional functionality for the sparse matrix implementations.
-4. Test and plot the performance of the GMRES implementation
-5. Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
+0. [x] Set up a repository to store the project files and create a docker image which can ensure a stable build environment.
+1. [x] Implement infrastructure for the project including writing classes for storing sparse matrices using the Compressed Sparse Row and Compressed Diagonal formats. Part of this project will be examining how these and other datastructures can affect performance.
+2. [x] Test that the infrastructure is working correctly using dummy data.
+3. [ ] Implement a generator for toy Convection-Diffusion systems and test that they work correctly.
+4. [x] Implement a sequential version of GMRES based on the existing code from Dr. Saad. This may require adding and testing additional functionality for the sparse matrix implementations.
+5. [ ] Test and plot the performance of the GMRES implementation
+6. [ ] Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
 
 
 ### Stretch Goals
-0. Compare the speed of these implementations to the default MATLAB implementation.
-1. Test scaling on a machine with a large number of cpu cores.
-2. Look for novel optimizations to the parallel implementation of GMRES and attempt improvements using other novel data structures.
-3. Implement and test sequential and parallel versions of other iterative methods like CG, MINRES or even non-Krylov methods such as Guass-Siedel and Jacobi.
+0. [ ] Compare the speed of these implementations to the default MATLAB implementation.
+1. [ ] Test scaling on a machine with a large number of cpu cores.
+2. [ ] Look for novel optimizations to the parallel implementation of GMRES and attempt improvements using other novel data structures.
+3. [ ] Implement and test sequential and parallel versions of other iterative methods like CG, MINRES or even non-Krylov methods such as Guass-Siedel and Jacobi.
 
 ### Deliverables
-0. Project Proposal
-1. Checkpoint
-3. Final Paper
-4. This codebase
+0. [x] Project Proposal
+1. [ ] Checkpoint
+3. [ ] Final Paper
+4. [ ] This codebase
 
 ### Ideas
 0. What if we tried to use restarting to refine our guess with multiple instances working in parallel and then being combined?

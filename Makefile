@@ -2,7 +2,7 @@
 BITS    ?= 64
 CXX      = g++
 LD       = g++
-CXXFLAGS = -MMD -O3 -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -I include
+CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -I include
 LDFLAGS  = -m$(BITS) -lpthread
 
 # Set the out directory
@@ -34,7 +34,7 @@ all: $(EXEFILES)
 # rules for building object files
 $(ODIR)/%.o: src/%.cc
 	@echo "[CXX] $< --> $@"
-	@$(CXX) $< -o $@ -c $(CXXFLAGS)
+	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O3
 
 # rules for building executables
 # assume an executable uses *all* of the common OFILES
@@ -46,7 +46,7 @@ debug: $(EXEFILES)
 
 $(ODIR)/%.o: src/%.cc
 	@echo "[CXX] $< --> $@"
-	@$(CXX) $< -o $@ -c $(CXXFLAGS) -ggdb
+	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O0 -ggdb
 
 # rules for building executables
 # assume an executable uses *all* of the common OFILES

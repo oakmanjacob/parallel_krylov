@@ -27,6 +27,11 @@ This represents a semester long project for a seminar at Lehigh University. The 
 3. Final Paper
 4. This codebase
 
+### Ideas
+0. What if we tried to use restarting to refine our guess with multiple instances working in parallel and then being combined?
+1. What if we implemented a parallel version of the matvec?
+
+
 ## Setup
 This section outlines everything whch needs to be done in order to build and run the codebase. I've provided a docker container in order to avoid issues with configuration. More about how to install docker can be found [here](https://docs.docker.com/get-docker/).  
   

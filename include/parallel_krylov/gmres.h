@@ -283,19 +283,16 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
         int64_t i = 0;
         while (notconv && iter < max_it && i < (int64_t)restart) {
             iter++;
-            // Can probably put w in V[i + 1] instead of its own thing
-            vector<complex<double>> w;
-            matvec(A, V[i], w);
+            matvec(A, V[i], V[i + 1]);
             for (int64_t k = 0; k <= i; k++) {
-                H[k][i] = dot(V[k], w);
+                H[k][i] = dot(V[k], V[i + 1]);
 
                 // w = w - H(k,i)*V(:,k);
-                vecsubmult_emplace(w, V[k], H[k][i]);
+                vecsubmult_emplace(V[i + 1], V[k], H[k][i]);
             }
 
-            H[i+1][i] = norm(w);
+            H[i+1][i] = norm(V[i + 1]);
             if (real(H[i+1][i]) > 0) {
-                V[i + 1] = w;
                 vecdiv_emplace(H[i+1][i], V[i + 1]);
                 
                 // Apply Givens rotation

@@ -218,19 +218,19 @@ double norm(const vector<complex<double>> &vec) {
 }
 
 /**
- * @brief 
+ * @brief Perform GMRES to solve the equation Ax = b without preconditioning
  * 
- * @param A 
- * @param b 
- * @param x0 
- * @param tol 
- * @param max_it 
- * @param restart 
- * @param x 
- * @param r 
- * @param r_nrm 
- * @param iter 
- * @param converged 
+ * @param A input sparse matrix A
+ * @param b input vector b
+ * @param x0 input initial guess
+ * @param tol input tolerance
+ * @param max_it input max number of iterations
+ * @param restart input max number of iterations before restarting
+ * @param x output guess for x
+ * @param r output estimated residual r
+ * @param r_nrm output vector containing the estimated 2-norm of the residual at each step
+ * @param iter output containing the number of iterations performed
+ * @param converged output true if converged
  */
 void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<complex<double>> &x0,
            double tol, size_t max_it, size_t restart, vector<complex<double>> &x, vector<complex<double>> &r,
@@ -331,17 +331,14 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
 
         // Form the (approximate) solution
         if (!notconv) {
-            // y = H(1:i,1:i) \ s(1:i);
             vector<complex<double>> y;
             backsub(H, i+1, s, y);
             // x = x + V(:,1:i)*y;
             matvecaddT_emplace(V, x0.size(), i+1, y, x);
         }
         else {
-            // y = H(1:m,1:m) \ s(1:m);
             vector<complex<double>> y;
             backsub(H, restart, s, y);
-            // x = x + V(:,1:m)*y;
             matvecaddT_emplace(V, x0.size(), restart, y, x);
             i = i - 1;
         }

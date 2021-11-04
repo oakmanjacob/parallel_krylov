@@ -17,6 +17,13 @@ public:
         _row_pointers.resize(row_count);
     }
 
+    MatrixCSR<V>(size_t row_count, size_t col_count, std::vector<std::tuple<size_t,size_t,V>> &elements) {
+        _col_count = col_count;
+        _row_pointers.resize(row_count);
+
+        this->replace(elements);
+    }
+
     MatrixCSR<V>(Matrix<V> other) {
         _col_count = other.get_col_count();
         _row_pointers.resize(other.get_row_count());
@@ -53,6 +60,11 @@ public:
         }
     }
 
+    /**
+     * @brief 
+     * 
+     * @param elements 
+     */
     void replace(std::vector<std::tuple<size_t,size_t,V>> &elements) {
         // Remove all old values from the matrix;
         _values.clear();

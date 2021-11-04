@@ -24,7 +24,7 @@ void print_help(char *progname) {
  */
 struct arg_t {
 
-    // 
+    // Whether the user has requested the help message
     bool help = false;
 };
 
@@ -48,13 +48,12 @@ void parse_args(int argc, char **argv, arg_t &args) {
 }
 
 /**
- * @brief Parse the command
+ * @brief Main entry point to the executable
  * 
- * @param argc 
- * @param argv 
- * @return int 
+ * @param argc The number of command-line arguments passed to the program
+ * @param argv The list of command-line arguments
+ * @return int success or error
  */
-
 int main(int argc, char** argv) {
     arg_t args;
     parse_args(argc, argv, args);
@@ -62,8 +61,6 @@ int main(int argc, char** argv) {
         print_help(argv[0]);
         exit(0);
     }
-
-    MatrixCSR<complex<double>> A = MatrixCSR<complex<double>>(5, 5);
 
     auto elements = std::vector<std::tuple<size_t,size_t,complex<double>>>{
         std::make_tuple(0,0,2),
@@ -73,7 +70,7 @@ int main(int argc, char** argv) {
         std::make_tuple(4,4,2)
     };
 
-    A.replace(elements);
+    MatrixCSR<complex<double>> A = MatrixCSR<complex<double>>(5, 5, elements);
 
     vector<complex<double>> b(5, 1);
     vector<complex<double>> x0(5);

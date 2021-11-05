@@ -380,7 +380,7 @@ struct GMRES_Out {
     vector<complex<double>> r;
     vector<double> r_nrm;
     size_t iter;
-    bool &converged;
+    bool converged;
 };
 
 void gmres(GMRES_In &in, GMRES_Out &out) {

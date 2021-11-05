@@ -39,7 +39,7 @@ public:
         return _col_count;
     }
 
-    void set(size_t x, size_t y, V value) {
+    void set(size_t y, size_t x, V value) {
         for (size_t i = x + 1; i < _row_pointers.size(); i++) {
             _row_pointers[i]++;
         }

@@ -2,8 +2,11 @@
 #include <iostream>
 #include <complex>
 #include <cstring>
+#include <string>
 #include <tuple>
 #include <unistd.h>
+
+#include "spdlog/spdlog.h"
 
 #include <parallel_krylov/gmres.h>
 
@@ -15,6 +18,10 @@
 void print_help(char *progname) {
     printf("%s: This executable is meant to demonstrate the performance of " 
            "parallel and sequential iterative solvers.\n", basename(progname));
+    printf("  -f          The file name containing the matrix information to import\n");
+    printf("  -t          The type of matrix to generate for A (diag, tridiag)\n");
+    printf("  -n          The size of the square matrix to generate for A\n");
+    printf("  -v          Enable verbose logs\n");
     printf("  -h          Print help (this message)\n");
 }
 
@@ -23,8 +30,10 @@ void print_help(char *progname) {
  * in the arguments passed to the executable.
  */
 struct arg_t {
-
-    // Whether the user has requested the help message
+    std::string filename;
+    std::string matrix_type = "diag";
+    size_t matrix_size = 5;
+    spdlog::level::level_enum log_level = spdlog::level::warn;
     bool help = false;
 };
 
@@ -38,12 +47,48 @@ struct arg_t {
  */
 void parse_args(int argc, char **argv, arg_t &args) {
     long opt;
-    while ((opt = getopt(argc, argv, "h")) != -1) {
+    while ((opt = getopt(argc, argv, "f:t:n:v::h:")) != -1) {
         switch (opt) {
+            case 'f':
+                args.filename = std::string(optarg);
+                break;
+            case 't':
+                args.matrix_type = std::string(optarg);
+                break;
+            case 'n':
+                args.matrix_size = atoi(optarg);
+                break;
+            case 'v':
+                args.log_level = spdlog::level::info;
+                break;
             case 'h':
                 args.help = true;
                 break;
         }
+    }
+}
+
+void gen_diag(std::vector<std::tuple<size_t,size_t,complex<double>>> &elements, size_t n, complex<double> value) {
+    elements.clear();
+    elements.reserve(n);
+
+    for (size_t i = 0; i < n; i++) {
+        elements.emplace_back(std::make_tuple(i,i,value));
+    }
+}
+
+void gen_tridiag(std::vector<std::tuple<size_t,size_t,complex<double>>> &elements, size_t n) {
+    elements.clear();
+    elements.reserve(3*(n-1) + 1);
+
+    for (size_t i = 0; i < n; i++) {
+        if (i - 1 > 0)
+            elements.emplace_back(std::make_tuple(i,i-1,-1));
+
+        elements.emplace_back(std::make_tuple(i,i,2));
+
+        if (i + 1 < n)
+            elements.emplace_back(std::make_tuple(i,i+1,-1));
     }
 }
 
@@ -62,31 +107,48 @@ int main(int argc, char** argv) {
         exit(0);
     }
 
-    auto elements = std::vector<std::tuple<size_t,size_t,complex<double>>>{
-        std::make_tuple(0,0,2),
-        std::make_tuple(1,1,2),
-        std::make_tuple(2,2,2),
-        std::make_tuple(3,3,2),
-        std::make_tuple(4,4,2)
+    spdlog::set_level(args.log_level);
+    spdlog::info("Program Started");
+
+    std::vector<std::tuple<size_t,size_t,complex<double>>> elements;
+
+    if (args.matrix_type == "diag") {
+        spdlog::info("Generating size {} diagonal matrix with 2 along the diagonal", args.matrix_size);
+        gen_diag(elements, args.matrix_size, 2);
+    }
+    else if (args.matrix_type == "tridiag") {
+        spdlog::info("Generating size {} tridiagonal matrix with 2 along the diagonal and -1 along the subdiagonal", args.matrix_size);
+        gen_tridiag(elements, args.matrix_size);
+    }
+    else {
+        spdlog::error("Invalid matrix type");
+        exit(1);
+    }
+
+    GMRES_In input{
+        MatrixCSR<complex<double>>(args.matrix_size, args.matrix_size, elements),
+        vector<complex<double>>(args.matrix_size, 1),
+        vector<complex<double>>(args.matrix_size),
+        0.000001,
+        args.matrix_size,
+        args.matrix_size
     };
 
-    MatrixCSR<complex<double>> A = MatrixCSR<complex<double>>(5, 5, elements);
+    
+    GMRES_Out output{
+        vector<complex<double>>(),
+        vector<complex<double>>(),
+        vector<double>(),
+        0,
+        false
+    };
 
-    vector<complex<double>> b(5, 1);
-    vector<complex<double>> x0(5);
-    double tol = 0.000001;
-    size_t max_it = 10;
-    size_t restart = 10;
-    vector<complex<double>> x;
-    vector<complex<double>> r;
-    vector<double> r_nrm;
-    size_t iter;
-    bool converged;
+    spdlog::info("Starting GMRES Algorithm");
+    gmres(input, output);
+    spdlog::info("GMRES Algorithm finished with convergence flag set to: {}", output.converged);
 
-    gmres(A,b,x0,tol,max_it,restart,x,r,r_nrm,iter,converged);
-
-    std::cout << "Howdy Partner!" << std::endl;
-    for (auto & value : x) {
+    spdlog::info("The following is the best guess for vector x with a residual of magnitude: {}", norm(output.r));
+    for (auto & value : output.x) {
         std::cout << value << std::endl;
     }
 

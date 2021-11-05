@@ -3,7 +3,7 @@ BITS    ?= 64
 CXX      = g++
 LD       = g++
 CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -I include
-LDFLAGS  = -m$(BITS) -lpthread
+LDFLAGS  = -m$(BITS) -lpthread -lspdlog
 
 # Set the out directory
 ODIR      := ./build

@@ -9,7 +9,7 @@ RUN apt update -y
 RUN apt upgrade -y
 
 # Install additional packages for development
-RUN DEBIAN_FRONTEND=noninteractive apt install -y git man curl build-essential gdb python3
+RUN DEBIAN_FRONTEND=noninteractive apt install -y git man curl build-essential gdb python3 libspdlog-dev
 
 # Change the working directory
 WORKDIR "/root"

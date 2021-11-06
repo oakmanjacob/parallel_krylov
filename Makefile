@@ -13,7 +13,7 @@ OUTFOLDER := $(shell mkdir -p $(ODIR))
 TARGETS = krylov
 
 # All .cc files without a main function
-CXXFILES = main
+CXXFILES = main gmres
 
 # generate names of all .o and .exe files we're creaing
 # name all .o files explicitly so can add to .PRECIOUS target

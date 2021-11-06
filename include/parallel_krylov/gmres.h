@@ -31,7 +31,7 @@ void backsub(const vector<vector<complex<double>>> &A, const size_t n, const vec
     for (int64_t i = n - 2; i >= 0; i--) {
         complex<double> sum = 0;
         for (size_t j = i + 1; j < n; j++) {
-            A[i][j]*x[j];
+            sum += A[i][j]*x[j];
         }
         x[i] = (b[i] - sum) / A[i][i];
     }
@@ -374,8 +374,10 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
         converged = true;
     }
 
+    iter++;
+
     // Eleminate excess size in residual
-    r_nrm.resize(iter+1);
+    r_nrm.resize(iter);
 }
 
 struct GMRES_In {

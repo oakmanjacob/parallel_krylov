@@ -159,7 +159,7 @@ int main(int argc, char** argv) {
 
     spdlog::info("Starting GMRES Algorithm");
     gmres(input, output);
-    spdlog::info("GMRES Algorithm finished with convergence flag set to: {}", output.converged);
+    spdlog::info("GMRES Algorithm finished in {} iterations with convergence flag set to: {}", output.iter, output.converged);
 
     spdlog::info("The following is the best guess for vector x with a residual of magnitude: {}", norm(output.r));
     for (auto & value : output.x) {

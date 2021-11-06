@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <tuple>
 
-#include "parallel_krylov/matrix.h"
+#include <spdlog/spdlog.h>
 
 template <typename V> class MatrixCSR {
 public:
@@ -12,11 +12,24 @@ public:
     std::vector<size_t> _row_pointers;
     size_t _col_count;
 
+    /**
+     * @brief Construct a new Matrix C S R< V> object
+     * 
+     * @param row_count 
+     * @param col_count 
+     */
     MatrixCSR<V>(size_t row_count, size_t col_count) {
         _col_count = col_count;
         _row_pointers.resize(row_count);
     }
 
+    /**
+     * @brief Construct a new Matrix C S R< V> object
+     * 
+     * @param row_count 
+     * @param col_count 
+     * @param elements 
+     */
     MatrixCSR<V>(size_t row_count, size_t col_count, std::vector<std::tuple<size_t,size_t,V>> &elements) {
         _col_count = col_count;
         _row_pointers.resize(row_count);
@@ -24,21 +37,37 @@ public:
         this->replace(elements);
     }
 
-    MatrixCSR<V>(Matrix<V> other) {
-        _col_count = other.get_col_count();
-        _row_pointers.resize(other.get_row_count());
-    }
-
+    /**
+     * @brief Destroy the Matrix C S R< V> object
+     * 
+     */
     ~MatrixCSR<V>() {}
 
+    /**
+     * @brief Get the row count object
+     * 
+     * @return size_t 
+     */
     size_t get_row_count() {
         return _row_pointers.size();
     }
 
+    /**
+     * @brief Get the col count object
+     * 
+     * @return size_t 
+     */
     size_t get_col_count() {
         return _col_count;
     }
 
+    /**
+     * @brief 
+     * 
+     * @param y 
+     * @param x 
+     * @param value 
+     */
     void set(size_t y, size_t x, V value) {
         for (size_t i = x + 1; i < _row_pointers.size(); i++) {
             _row_pointers[i]++;
@@ -82,11 +111,11 @@ public:
         _row_pointers[0] = 0;
 
         size_t row_index = 0;
-        size_t prev_x = -1;
-        size_t prev_y = -1;
+        size_t prev_row = -1;
+        size_t prev_col = -1;
 
         for (auto & element : elements) {
-            if (prev_x == std::get<0>(element) && prev_y == std::get<0>(element)) {
+            if (prev_row == std::get<0>(element) && prev_col == std::get<1>(element)) {
                 continue;
             }
 
@@ -102,8 +131,8 @@ public:
             _col_indexes.push_back(std::get<1>(element));
             _values.push_back(std::get<2>(element));
 
-            prev_x = std::get<0>(element);
-            prev_y = std::get<1>(element);
+            prev_row = std::get<0>(element);
+            prev_col = std::get<1>(element);
         }
     }
 };

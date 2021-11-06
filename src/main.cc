@@ -6,8 +6,7 @@
 #include <tuple>
 #include <unistd.h>
 
-#include "spdlog/spdlog.h"
-
+#include <spdlog/spdlog.h>
 #include <parallel_krylov/gmres.h>
 
 /**
@@ -21,6 +20,8 @@ void print_help(char *progname) {
     printf("  -f          The file name containing the matrix information to import\n");
     printf("  -t          The type of matrix to generate for A (diag, tridiag)\n");
     printf("  -n          The size of the square matrix to generate for A\n");
+    printf("  -i          The max number of iterations for gmres to complete\n");
+    printf("  -r          The number of iterations to do before restarting\n");
     printf("  -v          Enable verbose logs\n");
     printf("  -h          Print help (this message)\n");
 }
@@ -33,6 +34,9 @@ struct arg_t {
     std::string filename;
     std::string matrix_type = "diag";
     size_t matrix_size = 5;
+    size_t iterations = 100;
+    size_t restart = 100;
+    double tolerance = 0.000001;
     spdlog::level::level_enum log_level = spdlog::level::warn;
     bool help = false;
 };
@@ -47,7 +51,7 @@ struct arg_t {
  */
 void parse_args(int argc, char **argv, arg_t &args) {
     long opt;
-    while ((opt = getopt(argc, argv, "f:t:n:v::h:")) != -1) {
+    while ((opt = getopt(argc, argv, "f:t:n:i:r:v::h:")) != -1) {
         switch (opt) {
             case 'f':
                 args.filename = std::string(optarg);
@@ -57,6 +61,12 @@ void parse_args(int argc, char **argv, arg_t &args) {
                 break;
             case 'n':
                 args.matrix_size = atoi(optarg);
+                break;
+            case 'i':
+                args.iterations = atoi(optarg);
+                break;
+            case 'r':
+                args.restart = atoi(optarg);
                 break;
             case 'v':
                 args.log_level = spdlog::level::info;
@@ -82,7 +92,7 @@ void gen_tridiag(std::vector<std::tuple<size_t,size_t,complex<double>>> &element
     elements.reserve(3*(n-1) + 1);
 
     for (size_t i = 0; i < n; i++) {
-        if (i - 1 > 0)
+        if (i > 0)
             elements.emplace_back(std::make_tuple(i,i-1,-1));
 
         elements.emplace_back(std::make_tuple(i,i,2));
@@ -108,7 +118,7 @@ int main(int argc, char** argv) {
     }
 
     spdlog::set_level(args.log_level);
-    spdlog::info("Program Started");
+    spdlog::info("Parallel Krylov Program Started");
 
     std::vector<std::tuple<size_t,size_t,complex<double>>> elements;
 
@@ -125,15 +135,19 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
+    spdlog::info("Sparse matrix A:");
+    for (auto & element : elements) {
+        spdlog::info("row: {}, col: {}, value: {}", std::get<0>(element), std::get<1>(element), real(std::get<2>(element)));
+    }
+
     GMRES_In input{
         MatrixCSR<complex<double>>(args.matrix_size, args.matrix_size, elements),
         vector<complex<double>>(args.matrix_size, 1),
         vector<complex<double>>(args.matrix_size),
-        0.000001,
-        args.matrix_size,
-        args.matrix_size
+        args.tolerance,
+        args.iterations,
+        args.restart
     };
-
     
     GMRES_Out output{
         vector<complex<double>>(),

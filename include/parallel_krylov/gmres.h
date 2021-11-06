@@ -5,6 +5,7 @@
 #include <string>
 #include <complex>
 
+#include <spdlog/spdlog.h>
 #include <parallel_krylov/matrix_csr.h>
 
 using namespace std;
@@ -49,7 +50,7 @@ void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vecto
     out.clear();
     out.resize(mat.get_row_count());
     size_t row_index = 0;
-    for (size_t i = 0; i < mat.get_row_count(); i++) {
+    for (size_t i = 0; i < mat._values.size(); i++) {
         while (row_index + 1 < mat._row_pointers.size() && mat._row_pointers[row_index + 1] <= i) {
             row_index++;
         }
@@ -67,11 +68,20 @@ void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vecto
  * @param vec 
  * @param out 
  */
-void matvecaddT_emplace(const vector<vector<complex<double>>> &mat, const size_t m, const size_t n, vector<complex<double>> &vec, vector<complex<double>> &out) {
+void matvecaddT_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out) {
     assert(m > 0 && n > 0);
     assert(mat.size() >= n);
-    assert(mat[0].size() >= m);
     assert(vec.size() >= n);
+
+    size_t new_n = n;
+    while (new_n > 0 && mat[new_n].size() < m) {
+        new_n--;
+    }
+
+    if (new_n != n) {
+        spdlog::warn("matvecaddT: Averted seg fault by reducing n {} m {}, new n {}", n, m, new_n);
+        n = new_n;
+    }
 
     out.resize(m);
     for (size_t i = 0; i < n; i++) {
@@ -275,12 +285,12 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
     bool notconv = true;
     while (notconv && iter < max_it) {
         // Arnoldi (Construct orthonormal basis)
+        int64_t i = 0;
         V[0] = r;
         vecdiv_emplace(r_nrm[iter], V[0]);
 
         vector<complex<double>> s = e1;
         vecmult_emplace(r_nrm[iter], s);
-        int64_t i = 0;
         while (notconv && iter < max_it && i < (int64_t)restart) {
             iter++;
             matvec(A, V[i], V[i + 1]);
@@ -296,8 +306,7 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
                 vecdiv_emplace(H[i+1][i], V[i + 1]);
                 
                 // Apply Givens rotation
-                for (int64_t k = 0; k < i - 1; k++) {
-                    // Watch out here because we aren't conjugating
+                for (int64_t k = 0; k < i; k++) {
                     auto temp = cs[k]*H[k][i] + conj(sn[k])*H[k + 1][i];
                     H[k + 1][i] = -sn[k]*H[k][i] + conj(cs[k])*H[k + 1][i];
                     H[k][i] = temp;
@@ -337,7 +346,7 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
             vector<complex<double>> y;
             backsub(H, restart, s, y);
             matvecaddT_emplace(V, x0.size(), restart, y, x);
-            i = i - 1;
+            i--;
         }
 
         // Compute new Ax
@@ -353,6 +362,9 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
             notconv = false;
         }
         else {
+            if (!notconv) {
+                spdlog::warn("Encountered false convergence at iteration {}", iter);
+            }
             notconv = true;
         }
     }
@@ -363,7 +375,7 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
     }
 
     // Eleminate excess size in residual
-    r_nrm.resize(iter);
+    r_nrm.resize(iter+1);
 }
 
 struct GMRES_In {

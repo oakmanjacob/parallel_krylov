@@ -8,6 +8,7 @@
 
 #include <spdlog/spdlog.h>
 #include <parallel_krylov/gmres.h>
+#include <parallel_krylov/matrix_import.h>
 
 /**
  * @brief Print a helpful message about how to use this executable.
@@ -121,28 +122,55 @@ int main(int argc, char** argv) {
     spdlog::info("Parallel Krylov Program Started");
 
     std::vector<std::tuple<size_t,size_t,complex<double>>> elements;
+    std::vector<std::complex<double>> b;
 
     if (args.matrix_type == "diag") {
         spdlog::info("Generating size {} diagonal matrix with 2 along the diagonal", args.matrix_size);
         gen_diag(elements, args.matrix_size, 2);
+        b.resize(args.matrix_size, 1);
     }
     else if (args.matrix_type == "tridiag") {
         spdlog::info("Generating size {} tridiagonal matrix with 2 along the diagonal and -1 along the subdiagonal", args.matrix_size);
         gen_tridiag(elements, args.matrix_size);
+        b.resize(args.matrix_size, 1);
+    }
+    else if (args.matrix_type == "import") {
+        FILE* matrix_file = fopen("./data/Jac.csv", "r");
+        if (!importMatrixElements(matrix_file, elements, args.matrix_size)) {
+            spdlog::error("Could not import file!");
+        }
+
+        if (matrix_file != nullptr) {
+            fclose(matrix_file);
+        }
+
+        FILE* vector_file = fopen("./data/F.csv", "r");
+        if (!importVector(vector_file, b)) {
+            spdlog::error("Could not import file!");
+        }
+        
+        if (vector_file != nullptr) {
+            fclose(vector_file);
+        }
     }
     else {
         spdlog::error("Invalid matrix type");
         exit(1);
     }
 
-    spdlog::info("Sparse matrix A:");
+    spdlog::info("Sparse matrix A of size {} x {}:", args.matrix_size, args.matrix_size);
     for (auto & element : elements) {
         spdlog::info("row: {}, col: {}, value: {}", std::get<0>(element), std::get<1>(element), real(std::get<2>(element)));
     }
 
+    spdlog::info("Result vector b of size {}:", b.size());
+    for (auto & element : b) {
+        spdlog::info("{} + {}i", real(element), imag(element));
+    }
+
     GMRES_In input{
         MatrixCSR<complex<double>>(args.matrix_size, args.matrix_size, elements),
-        vector<complex<double>>(args.matrix_size, 1),
+        b,
         vector<complex<double>>(args.matrix_size),
         args.tolerance,
         args.iterations,

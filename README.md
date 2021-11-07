@@ -9,11 +9,12 @@ This represents a semester long project for a seminar at Lehigh University. The 
 - [x] Set up a repository to store the project files and create a docker image which can ensure a stable build environment.
 - [x] Implement infrastructure for the project including writing classes for storing sparse matrices using the Compressed Sparse Row and Compressed Diagonal formats. Part of this project will be examining how these and other datastructures can affect performance.
 - [x] Test that the infrastructure is working correctly using dummy data.
+- [x] Implement a sequential version of GMRES based on the existing code from Dr. Saad. This may require adding and testing additional functionality for the sparse matrix implementations.
 - [x] Implement logging using spdlog library
-- [x] Implement a generator for toy Convection-Diffusion systems and test that they work correctly.
+- [x] Implement a generator for basic diagonal and tridiagonal matrixes to make sure gmres is working.
+- [x] Integrate a generator for toy Convection-Diffusion systems and test that they work correctly.
 - [x] Set up the ability to import matrix systems via csv.
 - [x] Implement a matvec operation for a matrix stored in the sparse CSR format and a full vector
-- [x] Implement a sequential version of GMRES based on the existing code from Dr. Saad. This may require adding and testing additional functionality for the sparse matrix implementations.
 - [ ] Test and plot the performance of the GMRES implementation
 - [ ] Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
 

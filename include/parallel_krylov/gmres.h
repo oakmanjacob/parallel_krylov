@@ -58,6 +58,17 @@ void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vecto
  * @param vec 
  * @param out 
  */
+void matvecadd_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out);
+
+/**
+ * @brief Used to calculate out += Ax with an input matrix which is transposed
+ * 
+ * @param mat 
+ * @param m 
+ * @param n 
+ * @param vec 
+ * @param out 
+ */
 void matvecaddT_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out);
 
 /**
@@ -152,7 +163,7 @@ double norm(const vector<complex<double>> &vec);
  * @param iter output containing the number of iterations performed
  * @param converged output true if converged
  */
-void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<complex<double>> &x0,
+void sgmres_old(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<complex<double>> &x0,
            double tol, size_t max_it, size_t restart, vector<complex<double>> &x, vector<complex<double>> &r,
            vector<double> &r_nrm, size_t &iter, bool &converged);
 
@@ -163,4 +174,12 @@ void gmres(MatrixCSR<complex<double>> &A, vector<complex<double>> &b, vector<com
  * @param in 
  * @param out 
  */
-void gmres(GMRES_In &in, GMRES_Out &out);
+void sgmres_old(GMRES_In &in, GMRES_Out &out);
+
+/**
+ * @brief Perform GMRES to solve the equation Ax = b without preconditioning
+ * 
+ * @param in 
+ * @param out 
+ */
+void sgmres_new(GMRES_In &in, GMRES_Out &out);

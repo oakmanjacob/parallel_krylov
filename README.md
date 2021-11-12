@@ -15,6 +15,9 @@ This represents a semester long project for a seminar at Lehigh University. The 
 - [x] Integrate a generator for toy Convection-Diffusion systems and test that they work correctly.
 - [x] Set up the ability to import matrix systems via csv.
 - [x] Implement a matvec operation for a matrix stored in the sparse CSR format and a full vector
+- [x] Implement a verbatum version of mgmres to ascertain how much the optimizations helped
+- [ ] Complete the function level comments to better explain what is going on in the code
+- [ ] ...
 - [ ] Test and plot the performance of the GMRES implementation
 - [ ] Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
 

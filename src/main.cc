@@ -5,6 +5,7 @@
 #include <string>
 #include <tuple>
 #include <unistd.h>
+#include <chrono>
 
 #include <spdlog/spdlog.h>
 #include <parallel_krylov/gmres.h>
@@ -158,15 +159,15 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    spdlog::info("Sparse matrix A of size {} x {}:", args.matrix_size, args.matrix_size);
-    for (auto & element : elements) {
-        spdlog::info("row: {}, col: {}, value: {}", std::get<0>(element), std::get<1>(element), real(std::get<2>(element)));
-    }
+    // spdlog::info("Sparse matrix A of size {} x {}:", args.matrix_size, args.matrix_size);
+    // for (auto & element : elements) {
+    //     spdlog::info("row: {}, col: {}, value: {}", std::get<0>(element), std::get<1>(element), real(std::get<2>(element)));
+    // }
 
-    spdlog::info("Result vector b of size {}:", b.size());
-    for (auto & element : b) {
-        spdlog::info("{} + {}i", real(element), imag(element));
-    }
+    // spdlog::info("Result vector b of size {}:", b.size());
+    // for (auto & element : b) {
+    //     spdlog::info("{} + {}i", real(element), imag(element));
+    // }
 
     GMRES_In input{
         MatrixCSR<complex<double>>(args.matrix_size, args.matrix_size, elements),
@@ -185,14 +186,29 @@ int main(int argc, char** argv) {
         false
     };
 
+    GMRES_Out output2{
+        vector<complex<double>>(),
+        vector<complex<double>>(),
+        vector<double>(),
+        0,
+        false
+    };
+
     spdlog::info("Starting GMRES Algorithm");
-    gmres(input, output);
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+    sgmres_new(input, output);
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    
     spdlog::info("GMRES Algorithm finished in {} iterations with convergence flag set to: {}", output.iter, output.converged);
+    spdlog::info("Sequential took {} milliseconds", duration.count());
 
     spdlog::info("The following is the best guess for vector x with a residual of magnitude: {}", norm(output.r));
-    for (auto & value : output.x) {
-        std::cout << value << std::endl;
-    }
+    // for (auto & value : output.x) {
+    //     std::cout << value << std::endl;
+    // }
 
     return 0;
 }

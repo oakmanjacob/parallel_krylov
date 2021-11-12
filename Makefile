@@ -2,8 +2,8 @@
 BITS    ?= 64
 CXX      = g++
 LD       = g++
-CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -I include
-LDFLAGS  = -m$(BITS) -lpthread -lspdlog
+CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -I include -pg
+LDFLAGS  = -m$(BITS) -lpthread -lspdlog -pg
 
 # Set the out directory
 ODIR      := ./build
@@ -30,29 +30,31 @@ DFILES = $(patsubst %.o, %.d, $(ALLOFILES))
 .PHONY: all debug clean
 
 all: $(EXEFILES)
+	@echo "Built for production"
 
 # rules for building object files
 $(ODIR)/%.o: src/%.cc
-	@echo "[CXX] $< --> $@"
+	@echo "[CXX] $< --> $@ (-O3)"
 	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O3
 
 # rules for building executables
 # assume an executable uses *all* of the common OFILES
 $(ODIR)/%.exe: $(COMMONOFILES)
-	@echo "[LD] $^ --> $@"
-	@$(CXX) $^ -o $@ $(LDFLAGS)
+	@echo "[LD] $^ --> $@ (-O3)"
+	@$(CXX) $^ -o $@ $(LDFLAGS) -O3 
 
-debug: $(EXEFILES)
+# debug: $(EXEFILES)
+# 	@echo "Built for debug"
 
-$(ODIR)/%.o: src/%.cc
-	@echo "[CXX] $< --> $@"
-	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O0 -ggdb
+# $(ODIR)/%.o: src/%.cc
+# 	@echo "[CXX] $< --> $@ (-O0)"
+# 	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O0 -ggdb
 
-# rules for building executables
-# assume an executable uses *all* of the common OFILES
-$(ODIR)/%.exe: $(COMMONOFILES)
-	@echo "[LD] $^ --> $@"
-	@$(CXX) $^ -o $@ $(LDFLAGS)
+# # rules for building executables
+# # assume an executable uses *all* of the common OFILES
+# $(ODIR)/%.exe: $(COMMONOFILES)
+# 	@echo "[LD] $^ --> $@ (-O0)"
+# 	@$(CXX) $^ -o $@ $(LDFLAGS) -O0
 
 clean:
 	@echo Cleaning up...

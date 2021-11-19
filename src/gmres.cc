@@ -10,19 +10,11 @@
 #include <parallel_krylov/gmres.h>
 
 /**
- * @brief Perform GMRES to solve the equation Ax = b without preconditioning
+ * @brief Perform GMRES to solve the equation Ax = b without preconditioning or optimizations
+ * Allow complex values
  * 
- * @param A input sparse matrix A
- * @param b input vector b
- * @param x0 input initial guess
- * @param tol input tolerance
- * @param max_it input max number of iterations
- * @param restart input max number of iterations before restarting
- * @param x output guess for x
- * @param r output estimated residual r
- * @param r_nrm output vector containing the estimated 2-norm of the residual at each step
- * @param iter output containing the number of iterations performed
- * @param converged output true if converged
+ * @param in &GMRES_In<complex<double>> input struct
+ * @param out &GMRES_Out<complex<double>> output struct 
  */
 void sgmres_old(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out) {
     assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);
@@ -181,19 +173,10 @@ void sgmres_old(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out) 
 }
 
 /**
- * @brief Perform GMRES to solve the equation Ax = b without preconditioning
+ * @brief Perform GMRES to solve the equation Ax = b without preconditioning or optimizations
  * 
- * @param A input sparse matrix A
- * @param b input vector b
- * @param x0 input initial guess
- * @param tol input tolerance
- * @param max_it input max number of iterations
- * @param restart input max number of iterations before restarting
- * @param x output guess for x
- * @param r output estimated residual r
- * @param r_nrm output vector containing the estimated 2-norm of the residual at each step
- * @param iter output containing the number of iterations performed
- * @param converged output true if converged
+ * @param in &GMRES_In<double> input struct
+ * @param out &GMRES_Out<double> output struct 
  */
 void sgmres_old(GMRES_In<double> &in, GMRES_Out<double> &out) {
     assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);
@@ -354,17 +337,8 @@ void sgmres_old(GMRES_In<double> &in, GMRES_Out<double> &out) {
 /**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning
  * 
- * @param A input sparse matrix A
- * @param b input vector b
- * @param x0 input initial guess
- * @param tol input tolerance
- * @param max_it input max number of iterations
- * @param restart input max number of iterations before restarting
- * @param x output guess for x
- * @param r output estimated residual r
- * @param r_nrm output vector containing the estimated 2-norm of the residual at each step
- * @param iter output containing the number of iterations performed
- * @param converged output true if converged
+ * @param in &GMRES_In<complex<double>> input struct
+ * @param out &GMRES_Out<complex<double>> output struct 
  */
 void sgmres_new(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out) {
     assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);
@@ -505,17 +479,8 @@ void sgmres_new(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out) 
 /**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning
  * 
- * @param A input sparse matrix A
- * @param b input vector b
- * @param x0 input initial guess
- * @param tol input tolerance
- * @param max_it input max number of iterations
- * @param restart input max number of iterations before restarting
- * @param x output guess for x
- * @param r output estimated residual r
- * @param r_nrm output vector containing the estimated 2-norm of the residual at each step
- * @param iter output containing the number of iterations performed
- * @param converged output true if converged
+ * @param in &GMRES_In<double> input struct
+ * @param out &GMRES_Out<double> output struct 
  */
 void sgmres_new(GMRES_In<double> &in, GMRES_Out<double> &out) {
     assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);

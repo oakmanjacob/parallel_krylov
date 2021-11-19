@@ -86,6 +86,43 @@ void parse_args(int argc, char **argv, arg_t &args) {
 }
 
 /**
+ * @brief Convert a complex double to a string
+ * 
+ * @param value the complex double
+ * @return string an a + bi representation of the complex value
+ */
+string to_string(complex<double> &value) {
+    return to_string(real(value)) + " + " + to_string(imag(value)) + "i";
+}
+
+/**
+ * @brief Convert a tuple representing an element in a sparse matrix to a string
+ * 
+ * @tparam V the element value type
+ * @param value the element tuple of the form <y,x,value>
+ * @return string a pretty string containing the element information
+ */
+template <typename V> string to_string(tuple<size_t,size_t,V> &value) {
+    return "(y:" + to_string(std::get<0>(value)) + ", x:" + to_string(std::get<1>(value)) + ", value:" + to_string(std::get<2>(value)) + ")";
+}
+
+/**
+ * @brief Convert a vector to a pretty string for printing
+ * 
+ * @tparam V the element type to print
+ * @param vec the vector to convert to a string
+ * @return string a pretty string containing the elements of the vector
+ */
+template <typename V> string to_string(vector<V> &vec) {
+    string x_str = "\n{";
+    for (auto & value : vec) {
+        x_str += "\n" + to_string(value) + ",";
+    }
+    x_str += "\n}";
+    return x_str;
+}
+
+/**
  * @brief Main entry point to the executable
  * 
  * @param argc The number of command-line arguments passed to the program
@@ -108,7 +145,7 @@ int main(int argc, char** argv) {
 
     if (args.matrix_type == "diag") {
         spdlog::info("Generating size {} diagonal matrix with 2 along the diagonal", args.matrix_size);
-        gen_diag(elements, args.matrix_size, 2);
+        gen_diag(elements, args.matrix_size, 2.);
         b.resize(args.matrix_size, 1);
     }
     else if (args.matrix_type == "tridiag") {
@@ -140,15 +177,8 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    // spdlog::info("Sparse matrix A of size {} x {}:", args.matrix_size, args.matrix_size);
-    // for (auto & element : elements) {
-    //     spdlog::info("row: {}, col: {}, value: {}", std::get<0>(element), std::get<1>(element), real(std::get<2>(element)));
-    // }
-
-    // spdlog::info("Result vector b of size {}:", b.size());
-    // for (auto & element : b) {
-    //     spdlog::info("{} + {}i", real(element), imag(element));
-    // }
+    spdlog::debug("Sparse matrix A of size {} x {}: {}", args.matrix_size, args.matrix_size, to_string(elements));
+    spdlog::debug("Result vector b of size {}: {}", b.size(), to_string(b));
 
     GMRES_In<double> input{
         MatrixCSR<double>(args.matrix_size, args.matrix_size, elements),
@@ -179,14 +209,11 @@ int main(int argc, char** argv) {
     auto t2 = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-    
-    spdlog::info("GMRES Algorithm finished in {} iterations with convergence flag set to: {}", output.iter, output.converged);
-    spdlog::info("Algorithm took {} milliseconds", duration.count());
 
-    spdlog::info("The following is the best guess for vector x with a residual of magnitude: {}", norm(output.r));
-    // for (auto & value : output.x) {
-    //     std::cout << value << std::endl;
-    // }
+    printf("GMRES Algorithm finished in %zd iterations with convergence flag set to %d and a residual of magnitude: %e\n", output.iter, output.converged, norm(output.r));
+    printf("Algorithm took %ld milliseconds\n", duration.count());
+
+    spdlog::info("The following is the best guess for vector x {}", to_string(output.x));
 
     return 0;
 }

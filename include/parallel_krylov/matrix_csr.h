@@ -7,6 +7,11 @@
 
 #include <spdlog/spdlog.h>
 
+/**
+ * @brief Represents a sparse matrix stored in the compressed sparse row format.
+ * 
+ * @tparam V the value of elements stored in the matrix
+ */
 template <typename V> class MatrixCSR {
 public:
     std::vector<V> _values;
@@ -17,8 +22,8 @@ public:
     /**
      * @brief Construct a new Matrix C S R< V> object
      * 
-     * @param row_count 
-     * @param col_count 
+     * @param row_count number of rows in the matrix
+     * @param col_count number of the columns in the matrix
      */
     MatrixCSR<V>(size_t row_count, size_t col_count) {
         _col_count = col_count;
@@ -28,9 +33,9 @@ public:
     /**
      * @brief Construct a new Matrix C S R< V> object
      * 
-     * @param row_count 
-     * @param col_count 
-     * @param elements 
+     * @param row_count number of rows in the matrix
+     * @param col_count number of the columns in the matrix
+     * @param elements vector of all the elements in a matrix in the order of <y,x,value>
      */
     MatrixCSR<V>(size_t row_count, size_t col_count, std::vector<std::tuple<size_t,size_t,V>> &elements) {
         _col_count = col_count;
@@ -64,11 +69,11 @@ public:
     }
 
     /**
-     * @brief 
+     * @brief Upsert a value into this matrix.
      * 
-     * @param y 
-     * @param x 
-     * @param value 
+     * @param y y-coordinate, 0 indexed
+     * @param x x-coordinate, 0 indexed
+     * @param value
      */
     void set(size_t y, size_t x, V value) {
         for (size_t i = x + 1; i < _row_pointers.size(); i++) {
@@ -92,9 +97,9 @@ public:
     }
 
     /**
-     * @brief 
+     * @brief Replace the contents of this matrix with a vector of elements
      * 
-     * @param elements 
+     * @param elements vector of all the elements in a matrix in the order of <y,x,value>
      */
     void replace(std::vector<std::tuple<size_t,size_t,V>> &elements) {
         // Remove all old values from the matrix;

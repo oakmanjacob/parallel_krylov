@@ -66,11 +66,13 @@ void backsub(const vector<vector<double>> &A, const size_t n, const vector<doubl
 }
 
 /**
- * @brief 
+ * @brief Compute a sparse matvec operation using a CSR matrix and a dense vector
  * 
- * @param mat 
- * @param vec 
- * @param out 
+ * out = mat * vec
+ * 
+ * @param mat sparse matrix
+ * @param vec dense vector
+ * @param out output vector
  */
 void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vector<complex<double>> &out) {
     assert(vec.size() == mat.get_col_count());
@@ -88,11 +90,13 @@ void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vecto
 }
 
 /**
- * @brief 
+ * @brief Compute a sparse matvec operation using a CSR matrix and a dense vector
  * 
- * @param mat 
- * @param vec 
- * @param out 
+ * out = mat * vec
+ * 
+ * @param mat sparse matrix
+ * @param vec dense vector
+ * @param out output vector
  */
 void matvec(MatrixCSR<double> &mat, vector<double> &vec, vector<double> &out) {
     assert(vec.size() == mat.get_col_count());
@@ -457,7 +461,7 @@ double dot(const vector<double> &first, const vector<double> &second) {
 }
 
 /**
- * @brief Compute the dot product of two vectors
+ * @brief Compute the dot product of two vectors taking advantage of AVX2 SIMD instructions
  * 
  * @param first the first vector
  * @param second the second vector

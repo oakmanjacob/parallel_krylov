@@ -13,6 +13,17 @@
 
 using namespace std;
 
+/**
+ * @brief Struct for holding the imput values to GMRES implementations
+ * 
+ * @tparam V the datatype of the values in A, b, and x0
+ * @param A input sparse matrix A
+ * @param b input vector b
+ * @param x0 input initial guess
+ * @param tol input tolerance
+ * @param max_it input max number of iterations
+ * @param restart input max number of iterations before restarting
+ */
 template <typename V> struct GMRES_In {
     MatrixCSR<V> A;
     vector<V> b;
@@ -22,6 +33,16 @@ template <typename V> struct GMRES_In {
     size_t restart;
 };
 
+/**
+ * @brief Struct for holding the output values to GMRES implementations
+ * 
+ * @tparam V the datatype of the values in x and r
+ * @param x output guess for x
+ * @param r output estimated residual r
+ * @param r_nrm output vector containing the estimated 2-norm of the residual at each step
+ * @param iter output containing the number of iterations performed
+ * @param converged output true if converged
+ */
 template <typename V> struct GMRES_Out {
     vector<V> x;
     vector<V> r;
@@ -31,10 +52,11 @@ template <typename V> struct GMRES_Out {
 };
 
 /**
- * @brief Perform GMRES to solve the equation Ax = b without preconditioning or optimizations
+ * @brief Perform GMRES to solve the equation Ax = b without preconditioning
+ * Allow complex values
  * 
- * @param in 
- * @param out 
+ * @param in
+ * @param out
  */
 void sgmres_old(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out);
 

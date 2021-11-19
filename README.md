@@ -17,24 +17,34 @@ After running gperf, the lines which have the most impact on performace is one t
 - [x] Implement a generator for basic diagonal and tridiagonal matrixes to make sure gmres is working.
 - [x] Integrate a generator for toy Convection-Diffusion systems and test that they work correctly.
 - [x] Set up the ability to import matrix systems via csv.
-- [x] Implement a matvec operation for a matrix stored in the sparse CSR format and a full vector
-- [x] Implement a verbatum version of mgmres to ascertain how much the optimizations helped
-- [x] Split vector functions into a seperate utility file
-- [x] Implement GMRES versions which don't use complex numbers
-- [ ] Complete the function level comments to better explain what is going on in the code
-- [x] Use AVX instructions to optimize functions for non-complex implementations
-- [ ] Generate a sequence of Convection-Diffusion systems to use for testing
-- [ ] Test and plot the performance of the GMRES implementations -> Iterations & Execution Time vs Size of System
-- [ ] 
-- [ ] Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
+- [x] Implement a matvec operation for a matrix stored in the sparse CSR format and a full vector.
+- [x] Implement a verbatum version of mgmres to ascertain how much the optimizations helped.
+- [x] Split vector functions into a seperate utility file.
+- [x] Implement GMRES versions which don't use complex numbers.
+- [x] Complete the function level comments to better explain what is going on in the code.
+- [x] Use AVX instructions to optimize functions for non-complex implementations.
+- [x] Change so result information is always printed and there is a more clean way to print the values.
+- [ ] Generate a sequence of Convection-Diffusion systems to use for testing.
+- [ ] Test and plot the performance of the GMRES implementations -> Iterations & Execution Time vs Size of System.
+- [ ] Implement a restarted GMRES method which runs multiple versions in parallel and uses them to coordinate better initial guesses using a linear combination of the results.
+- [ ] Test the effects on iterations and computation time vs the normal optimized restared method.
+- [ ] Plot different versions of restarted GMRES vs parallel restarted GMRES
 
 
 ### Stretch Goals
-- [ ] Compare the speed of these implementations to the default MATLAB implementation.
+- [x] Compare the speed of these implementations to the default MATLAB implementation.
+- [x] Generate plots comparing MATLAB to this implementation
 - [ ] Test scaling on a machine with a large number of cpu cores.
-- [ ] Implement a basic ILU or Jacobi preconditioner to improve convergence and evaluate how this preconditioner affects data 
+- [ ] Implement the ability for GMRES to handle preconditioned systems.
+- [ ] Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
+- [ ] Implement a basic ILU or Jacobi preconditioner to improve convergence and evaluate how this preconditioner affects data.
 - [ ] Look for novel optimizations to the parallel implementation of GMRES and attempt improvements using other novel data structures.
 - [ ] Implement and test sequential and parallel versions of other iterative methods like CG, MINRES or even non-Krylov methods such as Guass-Siedel and Jacobi.
+
+### Additional TODOs
+- [ ] Set up a testing script so we don't need to run individual tests from the command line.
+- [ ] Fix the makefile so we can use make debug to compile with -O0 and debug flags, make gprof to compile with -pg and make to compile for production.
+- [ ] Expand this README with more information about the testing and project.
 
 ### Deliverables
 - [x] Project Proposal
@@ -43,8 +53,9 @@ After running gperf, the lines which have the most impact on performace is one t
 - [ ] This codebase
 
 ### Ideas
-0. What if we tried to use restarting to refine our guess with multiple instances working in parallel and then being combined?
-1. What if we implemented a parallel version of the matvec?
+0. What if we implemented a parallel version of the matvec?  
+    Answer: We don't actually spend enough time inside the matvec funtion to warrent threaded parallelism.
+1. What if we tried to use restarting to refine our guess with multiple instances working in parallel and then being combined?
 
 
 ## Setup

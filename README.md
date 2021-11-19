@@ -5,6 +5,9 @@ For CSE 398: Iterative Methods for Large Sparse Linear Systems
 ## Overview
 This represents a semester long project for a seminar at Lehigh University. The goal of this project is to implement and examine both sequential and parallel versions of several Krylov methods, starting with GMRES. These will be compared for use in solving generated Convection-Diffusion problems.
 
+### Notes
+After running gperf, the lines which have the most impact on performace is one that is combined vector addition and vector-scalar product an one which computes the dot product of two vectors. These may be somewhat parallelizable but first it will be worth looking at using AVX SIMD instructions to optimize these.
+
 ### Implementation Plan
 - [x] Set up a repository to store the project files and create a docker image which can ensure a stable build environment.
 - [x] Implement infrastructure for the project including writing classes for storing sparse matrices using the Compressed Sparse Row and Compressed Diagonal formats. Part of this project will be examining how these and other datastructures can affect performance.
@@ -16,9 +19,13 @@ This represents a semester long project for a seminar at Lehigh University. The 
 - [x] Set up the ability to import matrix systems via csv.
 - [x] Implement a matvec operation for a matrix stored in the sparse CSR format and a full vector
 - [x] Implement a verbatum version of mgmres to ascertain how much the optimizations helped
+- [x] Split vector functions into a seperate utility file
+- [x] Implement GMRES versions which don't use complex numbers
 - [ ] Complete the function level comments to better explain what is going on in the code
-- [ ] ...
-- [ ] Test and plot the performance of the GMRES implementation
+- [x] Use AVX instructions to optimize functions for non-complex implementations
+- [ ] Generate a sequence of Convection-Diffusion systems to use for testing
+- [ ] Test and plot the performance of the GMRES implementations -> Iterations & Execution Time vs Size of System
+- [ ] 
 - [ ] Implement a parallel version of GMRES using optimization found in research. This may require creating a new data structure for storing the values in a way which prevents data races.
 
 
@@ -31,7 +38,7 @@ This represents a semester long project for a seminar at Lehigh University. The 
 
 ### Deliverables
 - [x] Project Proposal
-- [ ] Checkpoint
+- [x] Checkpoint
 - [ ] Final Paper
 - [ ] This codebase
 

@@ -24,6 +24,7 @@ void print_help(char *progname) {
     printf("  -n          The size of the square matrix to generate for A\n");
     printf("  -i          The max number of iterations for gmres to complete\n");
     printf("  -r          The number of iterations to do before restarting\n");
+    printf("  -o          Use optimized GMRES implementation\n");
     printf("  -v          Enable verbose logs\n");
     printf("  -h          Print help (this message)\n");
 }
@@ -41,6 +42,7 @@ struct arg_t {
     double tolerance = 0.000001;
     spdlog::level::level_enum log_level = spdlog::level::warn;
     bool help = false;
+    bool optimize = false;
 };
 
 /**
@@ -53,7 +55,7 @@ struct arg_t {
  */
 void parse_args(int argc, char **argv, arg_t &args) {
     long opt;
-    while ((opt = getopt(argc, argv, "f:t:n:i:r:v::h:")) != -1) {
+    while ((opt = getopt(argc, argv, "f:t:n:i:r:v::o::h:")) != -1) {
         switch (opt) {
             case 'f':
                 args.filename = std::string(optarg);
@@ -73,34 +75,13 @@ void parse_args(int argc, char **argv, arg_t &args) {
             case 'v':
                 args.log_level = spdlog::level::info;
                 break;
+            case 'o':
+                args.optimize = true;
+                break;
             case 'h':
                 args.help = true;
                 break;
         }
-    }
-}
-
-void gen_diag(std::vector<std::tuple<size_t,size_t,complex<double>>> &elements, size_t n, complex<double> value) {
-    elements.clear();
-    elements.reserve(n);
-
-    for (size_t i = 0; i < n; i++) {
-        elements.emplace_back(std::make_tuple(i,i,value));
-    }
-}
-
-void gen_tridiag(std::vector<std::tuple<size_t,size_t,complex<double>>> &elements, size_t n) {
-    elements.clear();
-    elements.reserve(3*(n-1) + 1);
-
-    for (size_t i = 0; i < n; i++) {
-        if (i > 0)
-            elements.emplace_back(std::make_tuple(i,i-1,-1));
-
-        elements.emplace_back(std::make_tuple(i,i,2));
-
-        if (i + 1 < n)
-            elements.emplace_back(std::make_tuple(i,i+1,-1));
     }
 }
 
@@ -122,8 +103,8 @@ int main(int argc, char** argv) {
     spdlog::set_level(args.log_level);
     spdlog::info("Parallel Krylov Program Started");
 
-    std::vector<std::tuple<size_t,size_t,complex<double>>> elements;
-    std::vector<std::complex<double>> b;
+    std::vector<std::tuple<size_t,size_t,double>> elements;
+    std::vector<double> b;
 
     if (args.matrix_type == "diag") {
         spdlog::info("Generating size {} diagonal matrix with 2 along the diagonal", args.matrix_size);
@@ -169,41 +150,38 @@ int main(int argc, char** argv) {
     //     spdlog::info("{} + {}i", real(element), imag(element));
     // }
 
-    GMRES_In input{
-        MatrixCSR<complex<double>>(args.matrix_size, args.matrix_size, elements),
+    GMRES_In<double> input{
+        MatrixCSR<double>(args.matrix_size, args.matrix_size, elements),
         b,
-        vector<complex<double>>(args.matrix_size),
+        vector<double>(args.matrix_size),
         args.tolerance,
         args.iterations,
         args.restart
     };
     
-    GMRES_Out output{
-        vector<complex<double>>(),
-        vector<complex<double>>(),
+    GMRES_Out<double> output{
         vector<double>(),
-        0,
-        false
-    };
-
-    GMRES_Out output2{
-        vector<complex<double>>(),
-        vector<complex<double>>(),
+        vector<double>(),
         vector<double>(),
         0,
         false
     };
 
     spdlog::info("Starting GMRES Algorithm");
-
+    
     auto t1 = std::chrono::high_resolution_clock::now();
-    sgmres_new(input, output);
+    if (args.optimize) {
+        sgmres_new(input, output);
+    }
+    else {
+        sgmres_old(input, output);
+    }
     auto t2 = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
     
     spdlog::info("GMRES Algorithm finished in {} iterations with convergence flag set to: {}", output.iter, output.converged);
-    spdlog::info("Sequential took {} milliseconds", duration.count());
+    spdlog::info("Algorithm took {} milliseconds", duration.count());
 
     spdlog::info("The following is the best guess for vector x with a residual of magnitude: {}", norm(output.r));
     // for (auto & value : output.x) {

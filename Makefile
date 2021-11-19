@@ -2,8 +2,8 @@
 BITS    ?= 64
 CXX      = g++
 LD       = g++
-CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -I include -pg
-LDFLAGS  = -m$(BITS) -lpthread -lspdlog -pg
+CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -mavx2 -mfma -I include -pg
+LDFLAGS  = -m$(BITS) -lpthread -lspdlog -pg -mavx2 -mfma
 
 # Set the out directory
 ODIR      := ./build
@@ -13,7 +13,7 @@ OUTFOLDER := $(shell mkdir -p $(ODIR))
 TARGETS = krylov
 
 # All .cc files without a main function
-CXXFILES = main gmres
+CXXFILES = main gmres utility
 
 # generate names of all .o and .exe files we're creaing
 # name all .o files explicitly so can add to .PRECIOUS target

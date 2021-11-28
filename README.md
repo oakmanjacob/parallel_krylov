@@ -87,7 +87,10 @@ $> ./build/krylov -h
 
 ## Testing
 
-There are currently no test yet run
+Here is an example of how to run the tests for 4096 x 4096 systems 1..10
+```bash
+$> bash ./run_tests.sh 4096
+```
 
 ## Results
 

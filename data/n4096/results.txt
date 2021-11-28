@@ -1,0 +1,40 @@
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 1 -o
+GMRES Algorithm finished in 154 iterations with convergence flag set to 1 and a residual of magnitude: 1.726064e-03
+Algorithm took 176 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 2 -o
+GMRES Algorithm finished in 297 iterations with convergence flag set to 1 and a residual of magnitude: 1.611274e-03
+Algorithm took 309 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 3 -o
+GMRES Algorithm finished in 280 iterations with convergence flag set to 1 and a residual of magnitude: 4.878353e-04
+Algorithm took 305 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 4 -o
+GMRES Algorithm finished in 249 iterations with convergence flag set to 1 and a residual of magnitude: 1.957205e-04
+Algorithm took 271 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 5 -o
+GMRES Algorithm finished in 271 iterations with convergence flag set to 1 and a residual of magnitude: 6.837599e-05
+Algorithm took 269 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 6 -o
+GMRES Algorithm finished in 282 iterations with convergence flag set to 1 and a residual of magnitude: 4.796755e-05
+Algorithm took 400 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 7 -o
+GMRES Algorithm finished in 278 iterations with convergence flag set to 1 and a residual of magnitude: 3.282558e-05
+Algorithm took 296 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 8 -o
+GMRES Algorithm finished in 265 iterations with convergence flag set to 1 and a residual of magnitude: 2.430936e-05
+Algorithm took 281 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 9 -o
+GMRES Algorithm finished in 265 iterations with convergence flag set to 1 and a residual of magnitude: 1.869091e-05
+Algorithm took 269 milliseconds
+
+./build/krylov.exe -t import -n 4096 -i 4096 -r 4096 -k 10 -o
+GMRES Algorithm finished in 265 iterations with convergence flag set to 1 and a residual of magnitude: 1.757439e-05
+Algorithm took 286 milliseconds
+

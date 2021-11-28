@@ -1,0 +1,40 @@
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 1 -o
+GMRES Algorithm finished in 82 iterations with convergence flag set to 1 and a residual of magnitude: 3.007690e-04
+Algorithm took 9 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 2 -o
+GMRES Algorithm finished in 110 iterations with convergence flag set to 1 and a residual of magnitude: 1.453113e-04
+Algorithm took 15 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 3 -o
+GMRES Algorithm finished in 140 iterations with convergence flag set to 1 and a residual of magnitude: 5.728279e-05
+Algorithm took 16 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 4 -o
+GMRES Algorithm finished in 126 iterations with convergence flag set to 1 and a residual of magnitude: 2.910791e-05
+Algorithm took 21 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 5 -o
+GMRES Algorithm finished in 127 iterations with convergence flag set to 1 and a residual of magnitude: 1.623182e-05
+Algorithm took 14 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 6 -o
+GMRES Algorithm finished in 132 iterations with convergence flag set to 1 and a residual of magnitude: 1.092916e-05
+Algorithm took 15 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 7 -o
+GMRES Algorithm finished in 135 iterations with convergence flag set to 1 and a residual of magnitude: 8.164186e-06
+Algorithm took 16 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 8 -o
+GMRES Algorithm finished in 130 iterations with convergence flag set to 1 and a residual of magnitude: 6.795935e-06
+Algorithm took 15 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 9 -o
+GMRES Algorithm finished in 132 iterations with convergence flag set to 1 and a residual of magnitude: 5.174735e-06
+Algorithm took 15 milliseconds
+
+./build/krylov.exe -t import -n 1024 -i 1024 -r 1024 -k 10 -o
+GMRES Algorithm finished in 130 iterations with convergence flag set to 1 and a residual of magnitude: 3.387129e-06
+Algorithm took 15 milliseconds
+

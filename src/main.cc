@@ -19,7 +19,7 @@
 void print_help(char *progname) {
     printf("%s: This executable is meant to demonstrate the performance of " 
            "parallel and sequential iterative solvers.\n", basename(progname));
-    printf("  -f          The file name containing the matrix information to import\n");
+    printf("  -k          The number corresponding to which iteration of the convection diffusion problem to import, ie A_$k.csv\n");
     printf("  -t          The type of matrix to generate for A (diag, tridiag)\n");
     printf("  -n          The size of the square matrix to generate for A\n");
     printf("  -i          The max number of iterations for gmres to complete\n");
@@ -34,7 +34,7 @@ void print_help(char *progname) {
  * in the arguments passed to the executable.
  */
 struct arg_t {
-    std::string filename;
+    size_t filenum = 1;
     std::string matrix_type = "diag";
     size_t matrix_size = 5;
     size_t iterations = 100;
@@ -55,10 +55,10 @@ struct arg_t {
  */
 void parse_args(int argc, char **argv, arg_t &args) {
     long opt;
-    while ((opt = getopt(argc, argv, "f:t:n:i:r:v::o::h:")) != -1) {
+    while ((opt = getopt(argc, argv, "k:t:n:i:r:v::o::h:")) != -1) {
         switch (opt) {
-            case 'f':
-                args.filename = std::string(optarg);
+            case 'k':
+                args.filenum = atoi(optarg);
                 break;
             case 't':
                 args.matrix_type = std::string(optarg);
@@ -154,7 +154,9 @@ int main(int argc, char** argv) {
         b.resize(args.matrix_size, 1);
     }
     else if (args.matrix_type == "import") {
-        FILE* matrix_file = fopen("./data/n64/A_1.csv", "r");
+
+        string path = "./data/n" + to_string(args.matrix_size);
+        FILE* matrix_file = fopen((path + "/A_" + to_string(args.filenum) + ".csv").c_str(), "r");
         if (!importMatrixElements(matrix_file, elements, args.matrix_size)) {
             spdlog::error("Could not import file!");
         }
@@ -163,7 +165,7 @@ int main(int argc, char** argv) {
             fclose(matrix_file);
         }
 
-        FILE* vector_file = fopen("./data/n64/b_1.csv", "r");
+        FILE* vector_file = fopen((path + "/b_" + to_string(args.filenum) + ".csv").c_str(), "r");
         if (!importVector(vector_file, b)) {
             spdlog::error("Could not import file!");
         }

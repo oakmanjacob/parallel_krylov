@@ -1,0 +1,40 @@
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 1 -o
+GMRES Algorithm finished in 43 iterations with convergence flag set to 1 and a residual of magnitude: 7.233028e-05
+Algorithm took 0 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 2 -o
+GMRES Algorithm finished in 56 iterations with convergence flag set to 1 and a residual of magnitude: 2.583288e-05
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 3 -o
+GMRES Algorithm finished in 68 iterations with convergence flag set to 1 and a residual of magnitude: 2.393227e-05
+Algorithm took 2 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 4 -o
+GMRES Algorithm finished in 63 iterations with convergence flag set to 1 and a residual of magnitude: 8.552003e-06
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 5 -o
+GMRES Algorithm finished in 61 iterations with convergence flag set to 1 and a residual of magnitude: 7.256570e-06
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 6 -o
+GMRES Algorithm finished in 62 iterations with convergence flag set to 1 and a residual of magnitude: 6.230141e-06
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 7 -o
+GMRES Algorithm finished in 64 iterations with convergence flag set to 1 and a residual of magnitude: 3.952355e-06
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 8 -o
+GMRES Algorithm finished in 63 iterations with convergence flag set to 1 and a residual of magnitude: 2.706096e-06
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 9 -o
+GMRES Algorithm finished in 64 iterations with convergence flag set to 1 and a residual of magnitude: 1.879150e-06
+Algorithm took 1 milliseconds
+
+./build/krylov.exe -t import -n 256 -i 256 -r 256 -k 10 -o
+GMRES Algorithm finished in 62 iterations with convergence flag set to 1 and a residual of magnitude: 2.132963e-06
+Algorithm took 1 milliseconds
+

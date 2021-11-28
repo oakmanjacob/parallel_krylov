@@ -189,13 +189,7 @@ int main(int argc, char** argv) {
         args.restart
     };
     
-    GMRES_Out<double> output{
-        vector<double>(),
-        vector<double>(),
-        vector<double>(),
-        0,
-        false
-    };
+    GMRES_Out<double> output;
 
     spdlog::info("Starting GMRES Algorithm");
     

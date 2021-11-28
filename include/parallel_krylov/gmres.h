@@ -47,8 +47,8 @@ template <typename V> struct GMRES_Out {
     vector<V> x;
     vector<V> r;
     vector<double> r_nrm;
-    size_t iter;
-    bool converged;
+    size_t iter = 0;
+    bool converged = false;
 };
 
 /**

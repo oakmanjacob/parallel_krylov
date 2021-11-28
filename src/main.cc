@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
         b.resize(args.matrix_size, 1);
     }
     else if (args.matrix_type == "import") {
-        FILE* matrix_file = fopen("./data/Jac.csv", "r");
+        FILE* matrix_file = fopen("./data/A1.csv", "r");
         if (!importMatrixElements(matrix_file, elements, args.matrix_size)) {
             spdlog::error("Could not import file!");
         }
@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
             fclose(matrix_file);
         }
 
-        FILE* vector_file = fopen("./data/F.csv", "r");
+        FILE* vector_file = fopen("./data/b1.csv", "r");
         if (!importVector(vector_file, b)) {
             spdlog::error("Could not import file!");
         }

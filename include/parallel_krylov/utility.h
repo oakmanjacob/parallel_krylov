@@ -27,7 +27,7 @@ void backsub(const vector<vector<double>> &A, const size_t n, const vector<doubl
  * @param vec dense vector
  * @param out output vector
  */
-void matvec(MatrixCSR<double> &mat, vector<double> &vec, vector<double> &out);
+void matvec(MatrixCSR<double> const &mat, const vector<double> &vec, vector<double> &out);
 
 /**
  * @brief Used to calculate out += Ax with an input matrix which is transposed

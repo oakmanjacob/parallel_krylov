@@ -57,7 +57,7 @@ template <typename V> struct GMRES_Out {
  * @param in 
  * @param out 
  */
-void gmres(GMRES_In<double> &in, GMRES_Out<double> &out);
+void gmres(const GMRES_In<double> &in, GMRES_Out<double> &out);
 
 /**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning
@@ -65,7 +65,7 @@ void gmres(GMRES_In<double> &in, GMRES_Out<double> &out);
  * @param in 
  * @param out 
  */
-void ogmres(GMRES_In<double> &in, GMRES_Out<double> &out);
+void ogmres(const GMRES_In<double> &in, GMRES_Out<double> &out);
 
 /**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning
@@ -73,7 +73,7 @@ void ogmres(GMRES_In<double> &in, GMRES_Out<double> &out);
  * @param in 
  * @param out 
  */
-void ogmres_simd(GMRES_In<double> &in, GMRES_Out<double> &out);
+void ogmres_simd(const GMRES_In<double> &in, GMRES_Out<double> &out);
 
 /**
  * @brief Perform restarted gmres in parallel to solve the equation Ax = b without preconditioning
@@ -81,7 +81,7 @@ void ogmres_simd(GMRES_In<double> &in, GMRES_Out<double> &out);
  * @param in 
  * @param out 
  */
-void pgmres_sync(GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count);
+void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count, double priority);
 
 /**
  * @brief Perform restarted gmres in parallel to solve the equation Ax = b without preconditioning

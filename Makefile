@@ -4,6 +4,7 @@ CXX      = g++
 LD       = g++
 CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -mavx2 -mfma -I include -pg
 LDFLAGS  = -m$(BITS) -lpthread -lspdlog -pg -mavx2 -mfma
+OPTIM    = -O3
 
 # Set the out directory
 ODIR      := ./build
@@ -30,31 +31,20 @@ DFILES = $(patsubst %.o, %.d, $(ALLOFILES))
 .PHONY: all debug clean
 
 all: $(EXEFILES)
-	@echo "Built for production"
+
+debug: OPTIM = -O0 -ggdb
+debug: all
 
 # rules for building object files
 $(ODIR)/%.o: src/%.cc
-	@echo "[CXX] $< --> $@ (-O3)"
-	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O3
+	@echo "[CXX] $< --> $@ ($(OPTIM))"
+	@$(CXX) $< -o $@ -c $(CXXFLAGS) $(OPTIM)
 
 # rules for building executables
 # assume an executable uses *all* of the common OFILES
 $(ODIR)/%.exe: $(COMMONOFILES)
-	@echo "[LD] $^ --> $@ (-O3)"
-	@$(CXX) $^ -o $@ $(LDFLAGS) -O3 
-
-# debug: $(EXEFILES)
-# 	@echo "Built for debug"
-
-# $(ODIR)/%.o: src/%.cc
-# 	@echo "[CXX] $< --> $@ (-O0)"
-# 	@$(CXX) $< -o $@ -c $(CXXFLAGS) -O0 -ggdb
-
-# # rules for building executables
-# # assume an executable uses *all* of the common OFILES
-# $(ODIR)/%.exe: $(COMMONOFILES)
-# 	@echo "[LD] $^ --> $@ (-O0)"
-# 	@$(CXX) $^ -o $@ $(LDFLAGS) -O0
+	@echo "[LD] $^ --> $@ ($(OPTIM))"
+	@$(CXX) $^ -o $@ $(LDFLAGS) $(OPTIM) 
 
 clean:
 	@echo Cleaning up...

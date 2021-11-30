@@ -48,7 +48,7 @@ void backsub(const vector<vector<double>> &A, const size_t n, const vector<doubl
  * @param vec dense vector
  * @param out output vector
  */
-void matvec(const MatrixCSR<double> &mat, const vector<double> &vec, vector<double> &out) {
+void matvec(MatrixCSR<double> const &mat, const vector<double> &vec, vector<double> &out) {
     assert(vec.size() == mat.get_col_count());
 
     out.clear();

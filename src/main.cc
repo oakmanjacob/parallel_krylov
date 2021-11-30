@@ -20,7 +20,8 @@ void print_help(char *progname) {
     printf("%s: This executable is meant to demonstrate the performance of " 
            "parallel and sequential iterative solvers.\n", basename(progname));
     printf("  -k          The number corresponding to which iteration of the convection diffusion problem to import, ie A_$k.csv\n");
-    printf("  -t          The type of matrix to generate for A (diag, tridiag)\n");
+    printf("  -m          The type of matrix to generate for A (diag, tridiag, import)\n");
+    printf("  -t          The number of threads to use\n");
     printf("  -n          The size of the square matrix to generate for A\n");
     printf("  -i          The max number of iterations for gmres to complete\n");
     printf("  -r          The number of iterations to do before restarting\n");
@@ -36,12 +37,14 @@ void print_help(char *progname) {
 struct arg_t {
     size_t filenum = 1;
     std::string matrix_type = "diag";
+    size_t thread_count = 1;
     size_t matrix_size = 5;
     size_t iterations = 100;
     size_t restart = 100;
     double tolerance = 0.000001;
     spdlog::level::level_enum log_level = spdlog::level::warn;
     bool help = false;
+    double priority = 0.5;
     size_t optim_level = 1;
 };
 
@@ -55,16 +58,19 @@ struct arg_t {
  */
 void parse_args(int argc, char **argv, arg_t &args) {
     long opt;
-    while ((opt = getopt(argc, argv, "k:t:n:i:r:v::o:h:")) != -1) {
+    while ((opt = getopt(argc, argv, "k:m:n:t:i:r:v::o:h:p:")) != -1) {
         switch (opt) {
             case 'k':
                 args.filenum = atoi(optarg);
                 break;
-            case 't':
+            case 'm':
                 args.matrix_type = std::string(optarg);
                 break;
             case 'n':
                 args.matrix_size = atoi(optarg);
+                break;
+            case 't':
+                args.thread_count = atoi(optarg);
                 break;
             case 'i':
                 args.iterations = atoi(optarg);
@@ -77,6 +83,9 @@ void parse_args(int argc, char **argv, arg_t &args) {
                 break;
             case 'o':
                 args.optim_level = atoi(optarg);
+                break;
+            case 'p':
+                args.priority = 1 / atoi(optarg);
                 break;
             case 'h':
                 args.help = true;
@@ -197,6 +206,9 @@ int main(int argc, char** argv) {
     
     auto t1 = std::chrono::high_resolution_clock::now();
     switch (args.optim_level) {
+        case 3:
+            pgmres_sync(input, output, args.thread_count, args.priority);
+            break;
         case 2:
             ogmres_simd(input, output);
             break;

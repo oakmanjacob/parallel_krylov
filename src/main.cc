@@ -42,7 +42,7 @@ struct arg_t {
     double tolerance = 0.000001;
     spdlog::level::level_enum log_level = spdlog::level::warn;
     bool help = false;
-    bool optimize = false;
+    size_t optim_level = 1;
 };
 
 /**
@@ -55,7 +55,7 @@ struct arg_t {
  */
 void parse_args(int argc, char **argv, arg_t &args) {
     long opt;
-    while ((opt = getopt(argc, argv, "k:t:n:i:r:v::o::h:")) != -1) {
+    while ((opt = getopt(argc, argv, "k:t:n:i:r:v::o:h:")) != -1) {
         switch (opt) {
             case 'k':
                 args.filenum = atoi(optarg);
@@ -76,7 +76,7 @@ void parse_args(int argc, char **argv, arg_t &args) {
                 args.log_level = spdlog::level::info;
                 break;
             case 'o':
-                args.optimize = true;
+                args.optim_level = atoi(optarg);
                 break;
             case 'h':
                 args.help = true;
@@ -196,11 +196,19 @@ int main(int argc, char** argv) {
     spdlog::info("Starting GMRES Algorithm");
     
     auto t1 = std::chrono::high_resolution_clock::now();
-    if (args.optimize) {
-        sgmres_new(input, output);
-    }
-    else {
-        sgmres_old(input, output);
+    switch (args.optim_level) {
+        case 2:
+            ogmres_simd(input, output);
+            break;
+        case 1:
+            ogmres(input, output);
+            break;
+        case 0:
+            gmres(input, output);
+            break;
+        default: {
+            spdlog::error("Invalid optimization level {}", args.optim_level);
+        }
     }
     auto t2 = std::chrono::high_resolution_clock::now();
 

@@ -52,21 +52,12 @@ template <typename V> struct GMRES_Out {
 };
 
 /**
- * @brief Perform GMRES to solve the equation Ax = b without preconditioning
- * Allow complex values
- * 
- * @param in
- * @param out
- */
-void sgmres_old(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out);
-
-/**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning or optimizations
  * 
  * @param in 
  * @param out 
  */
-void sgmres_old(GMRES_In<double> &in, GMRES_Out<double> &out);
+void gmres(GMRES_In<double> &in, GMRES_Out<double> &out);
 
 /**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning
@@ -74,7 +65,7 @@ void sgmres_old(GMRES_In<double> &in, GMRES_Out<double> &out);
  * @param in 
  * @param out 
  */
-void sgmres_new(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out);
+void ogmres(GMRES_In<double> &in, GMRES_Out<double> &out);
 
 /**
  * @brief Perform GMRES to solve the equation Ax = b without preconditioning
@@ -82,4 +73,20 @@ void sgmres_new(GMRES_In<complex<double>> &in, GMRES_Out<complex<double>> &out);
  * @param in 
  * @param out 
  */
-void sgmres_new(GMRES_In<double> &in, GMRES_Out<double> &out);
+void ogmres_simd(GMRES_In<double> &in, GMRES_Out<double> &out);
+
+/**
+ * @brief Perform restarted gmres in parallel to solve the equation Ax = b without preconditioning
+ * 
+ * @param in 
+ * @param out 
+ */
+void pgmres_sync(GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count);
+
+/**
+ * @brief Perform restarted gmres in parallel to solve the equation Ax = b without preconditioning
+ * 
+ * @param in 
+ * @param out 
+ */
+// void pgmres_async(GMRES_In<double> &in, GMRES_Out<double> &out, size_t threads);

@@ -55,7 +55,7 @@ public:
      * 
      * @return size_t 
      */
-    size_t get_row_count() {
+    size_t get_row_count() const {
         return _row_pointers.size();
     }
 
@@ -64,7 +64,7 @@ public:
      * 
      * @return size_t 
      */
-    size_t get_col_count() {
+    size_t get_col_count() const {
         return _col_count;
     }
 

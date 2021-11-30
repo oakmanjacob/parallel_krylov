@@ -24,5 +24,10 @@ for k = 1:10
     gmres_times(k) = round(etime(clock,t1) * 1000);
 end
 
-mgmres_times
-gmres_times
+figure(1)
+plot(1:10, mgmres_times);
+hold on;
+plot(1:10, gmres_times);
+plot(1:10, [2635]);
+
+legend("mgmres", "gmres", "ogmres")

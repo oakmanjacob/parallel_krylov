@@ -3,12 +3,12 @@
 #include <iostream>
 #include <cmath>
 #include <string>
+#include <complex>
 
 #include <spdlog/spdlog.h>
 #include <parallel_krylov/matrix_csr.h>
 #include <parallel_krylov/utility.h>
-
-#include <immintrin.h>
+#include <parallel_krylov/utility_complex.h>
 
 using namespace std;
 
@@ -21,7 +21,7 @@ using namespace std;
  * @param b 
  * @param x 
  */
-void backsub(const vector<vector<double>> &A, const size_t n, const vector<double> &b, vector<double> &x) {
+void backsub(const vector<vector<complex<double>>> &A, const size_t n, const vector<complex<double>> &b, vector<complex<double>> &x) {
     assert(n > 0);
     assert(A.size() >= n);
     assert(A[0].size() >= n);
@@ -31,7 +31,7 @@ void backsub(const vector<vector<double>> &A, const size_t n, const vector<doubl
     x[n - 1] = b[n - 1] / A[n - 1][n - 1];
 
     for (int64_t i = n - 2; i >= 0; i--) {
-        double sum = 0;
+        complex<double> sum = 0;
         for (size_t j = i + 1; j < n; j++) {
             sum += A[i][j]*x[j];
         }
@@ -48,7 +48,7 @@ void backsub(const vector<vector<double>> &A, const size_t n, const vector<doubl
  * @param vec dense vector
  * @param out output vector
  */
-void matvec(const MatrixCSR<double> &mat, const vector<double> &vec, vector<double> &out) {
+void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vector<complex<double>> &out) {
     assert(vec.size() == mat.get_col_count());
 
     out.clear();
@@ -72,7 +72,7 @@ void matvec(const MatrixCSR<double> &mat, const vector<double> &vec, vector<doub
  * @param vec 
  * @param out 
  */
-void matvecadd_emplace(const vector<vector<double>> &mat, size_t m, size_t n, vector<double> &vec, vector<double> &out) {
+void matvecadd_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out) {
     assert(m > 0 && n > 0);
     assert(mat.size() >= m);
     assert(vec.size() >= n);
@@ -95,7 +95,7 @@ void matvecadd_emplace(const vector<vector<double>> &mat, size_t m, size_t n, ve
  * @param vec 
  * @param out 
  */
-void matvecaddT_emplace(const vector<vector<double>> &mat, size_t m, size_t n, vector<double> &vec, vector<double> &out) {
+void matvecaddT_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out) {
     assert(m > 0 && n > 0);
     assert(mat.size() >= n);
     assert(vec.size() >= n);
@@ -125,7 +125,7 @@ void matvecaddT_emplace(const vector<vector<double>> &mat, size_t m, size_t n, v
  * @param second 
  * @param out 
  */
-void vecsub(const vector<double> &first, const vector<double> &second, vector<double> &out) {
+void vecsub(const vector<complex<double>> &first, const vector<complex<double>> &second, vector<complex<double>> &out) {
     assert(first.size() == second.size());
     out = first;
 
@@ -142,32 +142,10 @@ void vecsub(const vector<double> &first, const vector<double> &second, vector<do
  * @param second 
  * @param scalar 
  */
-void vecaddmult_emplace(vector<double> &first, const vector<double> &second, const double scalar) {
+void vecaddmult_emplace(vector<complex<double>> &first, const vector<complex<double>> &second, const complex<double> scalar) {
     assert(first.size() == second.size());
 
     for (size_t i = 0; i < first.size(); i++) {
-        first[i] += second[i] * scalar;
-    }
-}
-
-/**
- * @brief Compute the operation such that
- * first[i] = first[i] + second[i] * scalar for i in [0,first.size())
- * 
- * @param first 
- * @param second 
- * @param scalar 
- */
-void vecaddmult_emplace_simd(vector<double> &first, const vector<double> &second, const double scalar) {
-    assert(first.size() == second.size());
-
-    size_t i = 0;
-    __m256d scalar_block = _mm256_set_pd(scalar,scalar,scalar,scalar);
-    for (; i + 4 < first.size(); i += 4) {
-        _mm256_storeu_pd(&first[i], _mm256_fmadd_pd(_mm256_loadu_pd(&second[i]), scalar_block, _mm256_loadu_pd(&first[i])));
-    }
-
-    for (; i < first.size(); i++) {
         first[i] += second[i] * scalar;
     }
 }
@@ -179,7 +157,7 @@ void vecaddmult_emplace_simd(vector<double> &first, const vector<double> &second
  * @param first 
  * @param second 
  */
-void vecdiv_emplace(const double first, vector<double> &second) {
+void vecdiv_emplace(const complex<double> first, vector<complex<double>> &second) {
     assert(first != 0.0);
 
     for (size_t i = 0; i < second.size(); i++) {
@@ -194,7 +172,7 @@ void vecdiv_emplace(const double first, vector<double> &second) {
  * @param first 
  * @param second 
  */
-void vecmult_emplace(const double first, vector<double> &second) {
+void vecmult_emplace(const complex<double> first, vector<complex<double>> &second) {
     for (size_t i = 0; i < second.size(); i++) {
         second[i] *= first;
     }
@@ -208,7 +186,7 @@ void vecmult_emplace(const double first, vector<double> &second) {
  * @param c 
  * @param s 
  */
-void rotmat(const double a, const double b, double &c, double &s) {
+void rotmat(const complex<double> a, const complex<double> b, complex<double> &c, complex<double> &s) {
     assert(b == 0.0 || abs(a) != 0);
 
     if (b == 0.0) {
@@ -219,7 +197,7 @@ void rotmat(const double a, const double b, double &c, double &s) {
         auto temp = abs(a) / abs(b);
         auto tempsq = temp * temp;
         c = sqrt(tempsq / (tempsq + 1));
-        s = a/(temp*b) / sqrt(1 + tempsq);
+        s = conj(a/(temp*b)) / sqrt(1 + tempsq);
     }
     else {
         auto temp = abs(b) / abs(a);
@@ -234,39 +212,13 @@ void rotmat(const double a, const double b, double &c, double &s) {
  * 
  * @param first the first vector
  * @param second the second vector
- * @return double first dot second
+ * @return complex<double> first dot second
  */
-double dot(const vector<double> &first, const vector<double> &second) {
+complex<double> dot(const vector<complex<double>> &first, const vector<complex<double>> &second) {
     assert(first.size() == second.size());
-    double sum = 0;
+    complex<double> sum = 0;
 
     for (size_t i = 0; i < first.size(); i++) {
-        sum += first[i] * second[i];
-    }
-
-    return sum;
-}
-
-/**
- * @brief Compute the dot product of two vectors taking advantage of AVX2 SIMD instructions
- * 
- * @param first the first vector
- * @param second the second vector
- * @return double first dot second
- */
-double dot_simd(const vector<double> &first, const vector<double> &second) {
-    assert(first.size() == second.size());
-    double sum = 0;
-    size_t i = 0;
-    __m256d result = _mm256_setr_pd(0,0,0,0);
-    for (; i + 4 < first.size(); i += 4) {
-        result = _mm256_hadd_pd(result, _mm256_mul_pd(_mm256_loadu_pd(&first[i]), _mm256_loadu_pd(&second[i])));
-    }
-
-    result = _mm256_hadd_pd(result, result);
-    sum += ((double*)&result)[0] + ((double*)&result)[2];
-
-    for (; i < first.size(); i++) {
         sum += first[i] * second[i];
     }
 
@@ -279,6 +231,6 @@ double dot_simd(const vector<double> &first, const vector<double> &second) {
  * @param vec the vector to compute
  * @return double the resulting norm
  */
-double norm(const vector<double> &vec) {
-    return sqrt(dot(vec, vec));
+double norm(const vector<complex<double>> &vec) {
+    return sqrt(real(dot(vec, vec)));
 }

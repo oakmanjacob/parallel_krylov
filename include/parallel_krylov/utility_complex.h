@@ -1,11 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <string>
+#include <complex>
 
-#include <parallel_krylov/matrix_csr.h>
-
-using namespace std;
+#include <parallel_krylov/utility.h>
 
 /**
  * @brief Solve the system Ax = b where we consider A to be the n x n square at the top left of the provided A. 
@@ -16,7 +13,7 @@ using namespace std;
  * @param b 
  * @param x 
  */
-void backsub(const vector<vector<double>> &A, const size_t n, const vector<double> &b, vector<double> &x);
+void backsub(const vector<vector<complex<double>>> &A, const size_t n, const vector<complex<double>> &b, vector<complex<double>> &x);
 
 /**
  * @brief Compute a sparse matvec operation using a CSR matrix and a dense vector
@@ -27,7 +24,7 @@ void backsub(const vector<vector<double>> &A, const size_t n, const vector<doubl
  * @param vec dense vector
  * @param out output vector
  */
-void matvec(MatrixCSR<double> &mat, vector<double> &vec, vector<double> &out);
+void matvec(MatrixCSR<complex<double>> &mat, vector<complex<double>> &vec, vector<complex<double>> &out);
 
 /**
  * @brief Used to calculate out += Ax with an input matrix which is transposed
@@ -38,7 +35,7 @@ void matvec(MatrixCSR<double> &mat, vector<double> &vec, vector<double> &out);
  * @param vec 
  * @param out 
  */
-void matvecadd_emplace(const vector<vector<double>> &mat, size_t m, size_t n, vector<double> &vec, vector<double> &out);
+void matvecadd_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out);
 
 /**
  * @brief Used to calculate out += Ax with an input matrix which is transposed
@@ -49,7 +46,7 @@ void matvecadd_emplace(const vector<vector<double>> &mat, size_t m, size_t n, ve
  * @param vec 
  * @param out 
  */
-void matvecaddT_emplace(const vector<vector<double>> &mat, size_t m, size_t n, vector<double> &vec, vector<double> &out);
+void matvecaddT_emplace(const vector<vector<complex<double>>> &mat, size_t m, size_t n, vector<complex<double>> &vec, vector<complex<double>> &out);
 
 /**
  * @brief out = first - second
@@ -58,7 +55,7 @@ void matvecaddT_emplace(const vector<vector<double>> &mat, size_t m, size_t n, v
  * @param second 
  * @param out 
  */
-void vecsub(const vector<double> &first, const vector<double> &second, vector<double> &out);
+void vecsub(const vector<complex<double>> &first, const vector<complex<double>> &second, vector<complex<double>> &out);
 
 /**
  * @brief Compute the operation such that
@@ -68,17 +65,7 @@ void vecsub(const vector<double> &first, const vector<double> &second, vector<do
  * @param second 
  * @param scalar 
  */
-void vecaddmult_emplace(vector<double> &first, const vector<double> &second, const double scalar);
-
-/**
- * @brief Compute the operation such that
- * first[i] = first[i] + second[i] * scalar for i in [0,first.size())
- * 
- * @param first 
- * @param second 
- * @param scalar 
- */
-void vecaddmult_emplace_simd(vector<double> &first, const vector<double> &second, const double scalar);
+void vecaddmult_emplace(vector<complex<double>> &first, const vector<complex<double>> &second, const complex<double> scalar);
 
 /**
  * @brief Element-wise vector division such that
@@ -87,7 +74,7 @@ void vecaddmult_emplace_simd(vector<double> &first, const vector<double> &second
  * @param first 
  * @param second 
  */
-void vecdiv_emplace(const double first, vector<double> &second);
+void vecdiv_emplace(const complex<double> first, vector<complex<double>> &second);
 
 /**
  * @brief Element-wise vector multiplication such that
@@ -96,7 +83,7 @@ void vecdiv_emplace(const double first, vector<double> &second);
  * @param first 
  * @param second 
  */
-void vecmult_emplace(const double first, vector<double> &second);
+void vecmult_emplace(const complex<double> first, vector<complex<double>> &second);
 
 /**
  * @brief Compute the Givens rotation matrix parameters for a and b
@@ -106,25 +93,16 @@ void vecmult_emplace(const double first, vector<double> &second);
  * @param c 
  * @param s 
  */
-void rotmat(const double a, const double b, double &c, double &s);
+void rotmat(const complex<double> a, const complex<double> b, complex<double> &c, complex<double> &s);
 
 /**
  * @brief Compute the dot product of two vectors
  * 
  * @param first the first vector
  * @param second the second vector
- * @return double first dot second
+ * @return complex<double> first dot second
  */
-double dot(const vector<double> &first, const vector<double> &second);
-
-/**
- * @brief Compute the dot product of two vectors taking advantage of AVX2 SIMD instructions
- * 
- * @param first the first vector
- * @param second the second vector
- * @return double first dot second
- */
-double dot_simd(const vector<double> &first, const vector<double> &second);
+complex<double> dot(const vector<complex<double>> &first, const vector<complex<double>> &second);
 
 /**
  * @brief Compute the 2-Norm of a vector
@@ -132,4 +110,4 @@ double dot_simd(const vector<double> &first, const vector<double> &second);
  * @param vec the vector to compute
  * @return double the resulting norm
  */
-double norm(const vector<double> &vec);
+double norm(const vector<complex<double>> &vec);

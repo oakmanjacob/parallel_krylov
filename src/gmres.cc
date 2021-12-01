@@ -197,9 +197,6 @@ void ogmres_helper(const GMRES_In<double> &in, GMRES_Out<double> &out,
 
     vector<vector<double>> V(in.restart + 1);
     vector<vector<double>> H(in.restart + 1);
-    for (size_t i = 0; i < in.restart + 1; i++) {
-        H[i].resize(in.restart);
-    }
 
     vector<double> cs(in.restart);
     vector<double> sn(in.restart);
@@ -217,7 +214,11 @@ void ogmres_helper(const GMRES_In<double> &in, GMRES_Out<double> &out,
 
         vector<double> s = e1;
         vecmult_emplace(out.r_nrm[out.iter], s);
+        
+        H[i].resize(in.restart);
         while (notconv && out.iter < in.max_it && i < (int64_t)in.restart) {
+            H[i + 1].resize(in.restart);
+
             out.iter++;
             matvec(in.A, V[i], V[i + 1]);
             for (int64_t k = 0; k <= i; k++) {
@@ -333,18 +334,18 @@ struct PGMRES_TConfig {
     vector<double> cs;
     vector<double> sn;
     vector<double> Ax;
-    bool notconv;
+    bool notconv = true;
     double rel_tol;
     int64_t i = 0;
 };
 
-void pgmres_sync_helper(PGMRES_TConfig &tconf, const GMRES_In<double> &in, GMRES_Out<double> &out) {
+void pgmres_sync_helper(PGMRES_TConfig &tconf, const GMRES_In<double> &in, GMRES_Out<double> &out, size_t restart) {
     tconf.V[0] = out.r;
 
     vecdiv_emplace(out.r_nrm[out.iter], tconf.V[0]);
     vecmult_emplace(out.r_nrm[out.iter], tconf.s);
 
-    while (tconf.notconv && out.iter < in.max_it && tconf.i < (int64_t)in.restart) {
+    while (tconf.notconv && out.iter < in.max_it && tconf.i < (int64_t)restart) {
         out.iter++;
         matvec(in.A, tconf.V[tconf.i], tconf.V[tconf.i + 1]);
         for (int64_t k = 0; k <= tconf.i; k++) {
@@ -392,14 +393,12 @@ void pgmres_sync_helper(PGMRES_TConfig &tconf, const GMRES_In<double> &in, GMRES
     if (!tconf.notconv) {
         vector<double> y;
         backsub(tconf.H, tconf.i+1, tconf.s, y);
-        // x = x + V(:,1:i)*y;
         matvecaddT_emplace(tconf.V, in.x0.size(), tconf.i+1, y, out.x);
     }
     else {
         vector<double> y;
-        backsub(tconf.H, in.restart, tconf.s, y);
-        matvecaddT_emplace(tconf.V, in.x0.size(), in.restart, y, out.x);
-        tconf.i--;
+        backsub(tconf.H, restart, tconf.s, y);
+        matvecaddT_emplace(tconf.V, in.x0.size(), restart, y, out.x);
     }
 
     // Compute new Ax
@@ -416,7 +415,7 @@ void pgmres_sync_helper(PGMRES_TConfig &tconf, const GMRES_In<double> &in, GMRES
     }
     else {
         if (!tconf.notconv) {
-            spdlog::warn("Encountered false convergence at iteration {}", out.iter);
+            //spdlog::warn("Encountered false convergence at iteration {}, residual {}, restart {}", out.iter, out.r_nrm[out.iter], restart);
         }
         tconf.notconv = true;
     }
@@ -428,7 +427,7 @@ void pgmres_sync_helper(PGMRES_TConfig &tconf, const GMRES_In<double> &in, GMRES
  * @param in &GMRES_In<double> input struct
  * @param out &GMRES_Out<double> output struct 
  */
-void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count, double priority) {
+void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count) {
     assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);
     assert(in.A.get_col_count() == in.x0.size());
     assert(in.A.get_row_count() == in.b.size());
@@ -481,10 +480,22 @@ void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thre
         tconfigs[i].notconv = true;
     }
 
+    size_t restart_next = in.restart;
     while (notconv && out.iter < in.max_it) {
+        if (restart_next == in.restart) {
+            for (size_t i = 0; i < thread_count; i++) {
+                tconfigs[i].notconv = true;
+                tconfigs[i].i = 0;
+            }
+            restart_next >>= 1;
+        }
+        else {
+            restart_next = in.restart;
+        }
+
         for (size_t i = 0; i < thread_count; i++) {
             tconfigs[i].s = e1;
-            threads.emplace_back(pgmres_sync_helper, ref(tconfigs[i]), ref(in), ref(outs[i]));
+            threads.emplace_back(pgmres_sync_helper, ref(tconfigs[i]), ref(in), ref(outs[i]), restart_next);
         }
 
         for (size_t i = 0; i < thread_count; i++) {
@@ -492,15 +503,17 @@ void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thre
         }
         threads.clear();
 
+        vector<double> temp = outs[0].x;
         for (size_t i = 0; i < thread_count; i++) {
             if (tconfigs[i].notconv && outs[i].iter < in.max_it) {
                 tconfigs[i].s = e1;
 
                 // Do some weird ass shit
-                for (size_t j = 0; j < thread_count; j++) {
-                    if (i != j) {
-                        vecaddmult_emplace(outs[i].x, outs[j].x, priority);
-                    }
+                if (i + 2 < thread_count) {
+                    outs[i].x = outs[i + 1].x;
+                }
+                else {
+                    outs[i].x = temp;
                 }
             }
             else {
@@ -518,6 +531,90 @@ void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thre
                 return;
 
             }
+        }
+    }
+}
+
+/**
+ * @brief Perform GMRES to solve the equation Ax = b without preconditioning
+ * 
+ * @param in &GMRES_In<double> input struct
+ * @param out &GMRES_Out<double> output struct 
+ */
+void wgmres(const GMRES_In<double> &in, GMRES_Out<double> &out) {
+    assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);
+    assert(in.A.get_col_count() == in.x0.size());
+    assert(in.A.get_row_count() == in.b.size());
+
+    
+    out.r_nrm.clear();
+    out.r_nrm.resize(in.max_it + 1);
+    out.converged = false;
+
+    vector<thread> threads;
+
+    bool notconv = true;
+    PGMRES_TConfig tconfig;
+
+
+    vector<double> e1(in.restart + 1);
+    e1[0] = 1.0;
+
+    out.x.resize(in.x0.size());
+    out.r_nrm.resize(in.max_it + 1);
+
+    // Compute the initial value for Ax
+    matvec(in.A, in.x0, tconfig.Ax);
+    
+    // Compute the initial residual
+    vecsub(in.b, tconfig.Ax, out.r);
+    out.r_nrm[0] = norm(out.r);
+
+    if (out.r_nrm[0] <= in.tol) {
+        out = out;
+        return;
+    }
+
+    // Normalize Tolerance
+    tconfig.rel_tol = norm(in.b)*in.tol;
+
+    tconfig.V.resize(in.restart + 1);
+    tconfig.H.resize(in.restart + 1);
+    for (size_t j = 0; j < in.restart + 1; j++) {
+        tconfig.H[j].resize(in.restart);
+    }
+
+    tconfig.cs.resize(in.restart);
+    tconfig.sn.resize(in.restart);
+
+    tconfig.notconv = true;
+
+    size_t restart_next = in.restart;
+    while (notconv && out.iter < in.max_it) {
+        if (restart_next == in.restart) {
+                tconfig.notconv = true;
+                tconfig.i = 0;
+            restart_next >>= 1;
+        }
+        else {
+            restart_next = in.restart;
+        }
+
+        tconfig.s = e1;
+        pgmres_sync_helper(tconfig, in, out, restart_next);
+
+        if (!tconfig.notconv || out.iter >= in.max_it) {
+            out.iter++;
+
+            // Eleminate excess size in residual
+            out.r_nrm.resize(out.iter);
+
+            // Did we converge?
+            if (out.r_nrm[out.iter] <= tconfig.rel_tol) {
+                out.converged = true;
+            }
+
+            return;
         }
     }
 }

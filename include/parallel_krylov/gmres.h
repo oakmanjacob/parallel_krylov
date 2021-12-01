@@ -81,7 +81,15 @@ void ogmres_simd(const GMRES_In<double> &in, GMRES_Out<double> &out);
  * @param in 
  * @param out 
  */
-void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count, double priority);
+void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count);
+
+/**
+ * @brief Perform weird restarted gmres to solve the equation Ax = b without preconditioning
+ * 
+ * @param in 
+ * @param out 
+ */
+void wgmres(const GMRES_In<double> &in, GMRES_Out<double> &out);
 
 /**
  * @brief Perform restarted gmres in parallel to solve the equation Ax = b without preconditioning

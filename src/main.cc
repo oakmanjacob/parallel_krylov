@@ -206,8 +206,11 @@ int main(int argc, char** argv) {
     
     auto t1 = std::chrono::high_resolution_clock::now();
     switch (args.optim_level) {
+        case 4:
+            wgmres(input, output);
+            break;
         case 3:
-            pgmres_sync(input, output, args.thread_count, args.priority);
+            pgmres_sync(input, output, args.thread_count);
             break;
         case 2:
             ogmres_simd(input, output);
@@ -230,6 +233,12 @@ int main(int argc, char** argv) {
     printf("Algorithm took %ld milliseconds\n", duration.count());
 
     spdlog::info("The following is the best guess for vector x {}", to_string(output.x));
+
+    vector<double> b0;
+    vector<double> r0;
+    matvec(input.A, output.x, b0);
+    vecsub(b0, input.b, r0);
+    spdlog::info("The following is what we got for r0 {}", to_string(r0));
 
     return 0;
 }

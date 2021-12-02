@@ -210,7 +210,7 @@ int main(int argc, char** argv) {
             wgmres(input, output);
             break;
         case 3:
-            pgmres_sync(input, output, args.thread_count);
+            pgmres_sync(input, output, args.thread_count, args.priority);
             break;
         case 2:
             ogmres_simd(input, output);

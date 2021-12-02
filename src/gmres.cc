@@ -427,7 +427,7 @@ void pgmres_sync_helper(PGMRES_TConfig &tconf, const GMRES_In<double> &in, GMRES
  * @param in &GMRES_In<double> input struct
  * @param out &GMRES_Out<double> output struct 
  */
-void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count) {
+void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thread_count, double priority) {
     assert(in.A.get_row_count() > 0 && in.A.get_col_count() > 0);
     assert(in.A.get_col_count() == in.x0.size());
     assert(in.A.get_row_count() == in.b.size());
@@ -482,15 +482,9 @@ void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thre
 
     size_t restart_next = in.restart;
     while (notconv && out.iter < in.max_it) {
-        if (restart_next == in.restart) {
-            for (size_t i = 0; i < thread_count; i++) {
-                tconfigs[i].notconv = true;
-                tconfigs[i].i = 0;
-            }
-            restart_next >>= 1;
-        }
-        else {
-            restart_next = in.restart;
+        for (size_t i = 0; i < thread_count; i++) {
+            tconfigs[i].notconv = true;
+            tconfigs[i].i = 0;
         }
 
         for (size_t i = 0; i < thread_count; i++) {
@@ -503,18 +497,29 @@ void pgmres_sync(const GMRES_In<double> &in, GMRES_Out<double> &out, size_t thre
         }
         threads.clear();
 
-        vector<double> temp = outs[0].x;
+        vector<vector<double>> new_x_list(thread_count);
+        for (size_t i = 0; i < thread_count; i++) {
+            new_x_list[i] = outs[i].x;
+            for (size_t j = 0; j < thread_count; j++) {
+                if (i != j) {
+                    vecaddmult_emplace(new_x_list[i], outs[j].x, priority);
+                }
+            }
+        }
+
+
         for (size_t i = 0; i < thread_count; i++) {
             if (tconfigs[i].notconv && outs[i].iter < in.max_it) {
                 tconfigs[i].s = e1;
 
-                // Do some weird ass shit
-                if (i + 2 < thread_count) {
-                    outs[i].x = outs[i + 1].x;
-                }
-                else {
-                    outs[i].x = temp;
-                }
+                outs[i].x = new_x_list[i];
+
+                // Compute the initial value for Ax
+                matvec(in.A, outs[i].x, tconfigs[i].Ax);
+                
+                // Compute the initial residual
+                vecsub(in.b, tconfigs[i].Ax, outs[i].r);
+                outs[i].r_nrm[outs[i].iter] = norm(outs[i].r);
             }
             else {
                 outs[i].iter++;

@@ -24,11 +24,11 @@ After running gperf, the lines which have the most impact on performace is one t
 - [x] Complete the function level comments to better explain what is going on in the code.
 - [x] Use AVX instructions to optimize functions for non-complex implementations.
 - [x] Change so result information is always printed and there is a more clean way to print the values.
-- [ ] Generate a sequence of Convection-Diffusion systems to use for testing.
-- [ ] Test and plot the performance of the GMRES implementations -> Iterations & Execution Time vs Size of System.
-- [ ] Implement a restarted GMRES method which runs multiple versions in parallel and uses them to coordinate better initial guesses using a linear combination of the results.
-- [ ] Test the effects on iterations and computation time vs the normal optimized restared method.
-- [ ] Plot different versions of restarted GMRES vs parallel restarted GMRES
+- [x] Generate a sequence of Convection-Diffusion systems to use for testing.
+- [x] Test and plot the performance of the GMRES implementations -> Iterations & Execution Time vs Size of System.
+- [x] Implement a restarted GMRES method which runs multiple versions in parallel and uses them to coordinate better initial guesses using a linear combination of the results.
+- [x] Test the effects on iterations and computation time vs the normal optimized restared method.
+- [x] Plot different versions of restarted GMRES vs parallel restarted GMRES
 
 
 ### Stretch Goals
@@ -42,15 +42,15 @@ After running gperf, the lines which have the most impact on performace is one t
 - [ ] Implement and test sequential and parallel versions of other iterative methods like CG, MINRES or even non-Krylov methods such as Guass-Siedel and Jacobi.
 
 ### Additional TODOs
-- [ ] Set up a testing script so we don't need to run individual tests from the command line.
-- [ ] Fix the makefile so we can use make debug to compile with -O0 and debug flags, make gprof to compile with -pg and make to compile for production.
+- [x] Set up a testing script so we don't need to run individual tests from the command line.
+- [x] Fix the makefile so we can use make debug to compile with -O0 and debug flags, make gprof to compile with -pg and make to compile for production.
 - [ ] Expand this README with more information about the testing and project.
 
 ### Deliverables
 - [x] Project Proposal
 - [x] Checkpoint
-- [ ] Final Paper
-- [ ] This codebase
+- [x] Final Paper
+- [x] This codebase
 
 ### Ideas
 0. What if we implemented a parallel version of the matvec?  
@@ -89,12 +89,33 @@ $> ./build/krylov -h
 
 Here is an example of how to run the tests for 4096 x 4096 systems 1..10
 ```bash
-$> bash ./run_tests.sh 4096
+$> bash ./test/run_tests.sh 4096
+```
+
+The following scripts are provided for builk testing
+- ./test/run_tests_parallel.sh
+- ./test/run_tests_sequential.sh
+- ./test/run_tests_weird.sh
+
+There is also python script provided to extract an array of just the execution times from the files generated from these tests.
+```bash
+$> python3 ./test/extract_times.py {RESULT_FILE_NAME_HERE}.txt
 ```
 
 ## Results
 
-There are currently no results to display
+### Sequential Optimizations
+![Execution Times of many 1024 x 1024 C-D Systems](https://github.com/oakmanjacob/parallel_krylov/blob/main/results/n1024/plot_1024.png)
+![Execution Times of many 4096 x 4096 C-D Systems](https://github.com/oakmanjacob/parallel_krylov/blob/main/results/n4096/plot_4096.png)
+![Execution Times of many 16384 x 16384 C-D Systems](https://github.com/oakmanjacob/parallel_krylov/blob/main/results/n16384/plot_16384.png)
+
+### Parallel Implementation
+![Graph Showing Bad Scaling on Parallel Implementation](https://github.com/oakmanjacob/parallel_krylov/blob/main/results/n16384/plot_parallel_r75_p10.png)
+
+### Weird Restarted GMRES
+![Weird and SIMD GMRES on 16384 x 16384 C-D Iteration 4 at Varying Restart Values](https://github.com/oakmanjacob/parallel_krylov/blob/main/results/n16384/plot_wgmres_k4.png)
+![Weird and SIMD GMRES on 16384 x 16384 C-D Iteration 10 at Varying Restart Values](https://github.com/oakmanjacob/parallel_krylov/blob/main/results/n16384/plot_wgmres_k10.png)
+
 
 ## References
 ### [1] Eric G. Parker and James F. O'Brien. "Real-Time Deformation and Fracture in a Game Environment". In Proceedings of the ACM SIGGRAPH/Eurographics Symposium on Computer Animation, pages 156–166, August 2009.

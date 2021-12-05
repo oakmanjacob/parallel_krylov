@@ -2,7 +2,8 @@
 BITS    ?= 64
 CXX      = g++
 LD       = g++
-CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -mavx2 -mfma -I include -pg
+CXXFLAGS = -MMD -m$(BITS) -std=c++17 -Wall -Wextra -fPIC -mavx2 -mfma -I include
+#CXXFLAGS = $(CXXFLAGS) -pg
 LDFLAGS  = -m$(BITS) -lpthread -lspdlog -pg -mavx2 -mfma
 OPTIM    = -O3
 

@@ -1,0 +1,204 @@
+./build/krylov.exe -m import -n 16384 -i 16384 -r 4 -k 10 -o 4
+GMRES Algorithm finished in 7860 iterations with convergence flag set to 1 and a residual of magnitude: 5.011025e-05
+Algorithm took 4939 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 10 -k 10 -o 4
+GMRES Algorithm finished in 3094 iterations with convergence flag set to 1 and a residual of magnitude: 5.002542e-05
+Algorithm took 1441 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 20 -k 10 -o 4
+GMRES Algorithm finished in 1736 iterations with convergence flag set to 1 and a residual of magnitude: 4.944736e-05
+Algorithm took 819 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 30 -k 10 -o 4
+GMRES Algorithm finished in 1292 iterations with convergence flag set to 1 and a residual of magnitude: 4.670647e-05
+Algorithm took 668 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 40 -k 10 -o 4
+GMRES Algorithm finished in 1216 iterations with convergence flag set to 1 and a residual of magnitude: 4.989881e-05
+Algorithm took 721 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 50 -k 10 -o 4
+GMRES Algorithm finished in 1530 iterations with convergence flag set to 1 and a residual of magnitude: 4.994777e-05
+Algorithm took 1062 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 60 -k 10 -o 4
+GMRES Algorithm finished in 1462 iterations with convergence flag set to 1 and a residual of magnitude: 4.911780e-05
+Algorithm took 1137 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 70 -k 10 -o 4
+GMRES Algorithm finished in 1265 iterations with convergence flag set to 1 and a residual of magnitude: 4.820451e-05
+Algorithm took 860 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 80 -k 10 -o 4
+GMRES Algorithm finished in 1760 iterations with convergence flag set to 1 and a residual of magnitude: 4.998239e-05
+Algorithm took 1377 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 90 -k 10 -o 4
+GMRES Algorithm finished in 1524 iterations with convergence flag set to 1 and a residual of magnitude: 4.784890e-05
+Algorithm took 1267 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 100 -k 10 -o 4
+GMRES Algorithm finished in 1564 iterations with convergence flag set to 1 and a residual of magnitude: 4.994622e-05
+Algorithm took 1365 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 110 -k 10 -o 4
+GMRES Algorithm finished in 1630 iterations with convergence flag set to 1 and a residual of magnitude: 4.899665e-05
+Algorithm took 1562 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 120 -k 10 -o 4
+GMRES Algorithm finished in 1631 iterations with convergence flag set to 1 and a residual of magnitude: 4.971322e-05
+Algorithm took 1624 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 130 -k 10 -o 4
+GMRES Algorithm finished in 1445 iterations with convergence flag set to 1 and a residual of magnitude: 4.985070e-05
+Algorithm took 1486 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 140 -k 10 -o 4
+GMRES Algorithm finished in 1362 iterations with convergence flag set to 1 and a residual of magnitude: 4.997374e-05
+Algorithm took 1458 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 150 -k 10 -o 4
+GMRES Algorithm finished in 1386 iterations with convergence flag set to 1 and a residual of magnitude: 4.989490e-05
+Algorithm took 1594 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 160 -k 10 -o 4
+GMRES Algorithm finished in 1330 iterations with convergence flag set to 1 and a residual of magnitude: 4.982529e-05
+Algorithm took 1550 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 170 -k 10 -o 4
+GMRES Algorithm finished in 1276 iterations with convergence flag set to 1 and a residual of magnitude: 5.002777e-05
+Algorithm took 1625 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 180 -k 10 -o 4
+GMRES Algorithm finished in 1254 iterations with convergence flag set to 1 and a residual of magnitude: 5.004266e-05
+Algorithm took 1605 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 190 -k 10 -o 4
+GMRES Algorithm finished in 1252 iterations with convergence flag set to 1 and a residual of magnitude: 4.881279e-05
+Algorithm took 1651 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 200 -k 10 -o 4
+GMRES Algorithm finished in 1251 iterations with convergence flag set to 1 and a residual of magnitude: 4.977579e-05
+Algorithm took 1840 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 210 -k 10 -o 4
+GMRES Algorithm finished in 1245 iterations with convergence flag set to 1 and a residual of magnitude: 4.994969e-05
+Algorithm took 1824 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 220 -k 10 -o 4
+GMRES Algorithm finished in 1192 iterations with convergence flag set to 1 and a residual of magnitude: 4.968889e-05
+Algorithm took 1790 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 230 -k 10 -o 4
+GMRES Algorithm finished in 1177 iterations with convergence flag set to 1 and a residual of magnitude: 4.971709e-05
+Algorithm took 1961 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 240 -k 10 -o 4
+GMRES Algorithm finished in 1107 iterations with convergence flag set to 1 and a residual of magnitude: 5.005794e-05
+Algorithm took 1986 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 250 -k 10 -o 4
+GMRES Algorithm finished in 1119 iterations with convergence flag set to 1 and a residual of magnitude: 4.976509e-05
+Algorithm took 2176 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 260 -k 10 -o 4
+GMRES Algorithm finished in 1034 iterations with convergence flag set to 1 and a residual of magnitude: 4.988717e-05
+Algorithm took 1771 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 270 -k 10 -o 4
+GMRES Algorithm finished in 1011 iterations with convergence flag set to 1 and a residual of magnitude: 4.994729e-05
+Algorithm took 1826 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 280 -k 10 -o 4
+GMRES Algorithm finished in 1013 iterations with convergence flag set to 1 and a residual of magnitude: 4.944515e-05
+Algorithm took 1750 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 290 -k 10 -o 4
+GMRES Algorithm finished in 1028 iterations with convergence flag set to 1 and a residual of magnitude: 4.981193e-05
+Algorithm took 1884 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 300 -k 10 -o 4
+GMRES Algorithm finished in 1055 iterations with convergence flag set to 1 and a residual of magnitude: 4.747573e-05
+Algorithm took 2023 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 310 -k 10 -o 4
+GMRES Algorithm finished in 1061 iterations with convergence flag set to 1 and a residual of magnitude: 5.007934e-05
+Algorithm took 2042 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 320 -k 10 -o 4
+GMRES Algorithm finished in 1031 iterations with convergence flag set to 1 and a residual of magnitude: 4.967999e-05
+Algorithm took 2045 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 330 -k 10 -o 4
+GMRES Algorithm finished in 1010 iterations with convergence flag set to 1 and a residual of magnitude: 4.980213e-05
+Algorithm took 2091 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 340 -k 10 -o 4
+GMRES Algorithm finished in 988 iterations with convergence flag set to 1 and a residual of magnitude: 4.932174e-05
+Algorithm took 2065 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 350 -k 10 -o 4
+GMRES Algorithm finished in 973 iterations with convergence flag set to 1 and a residual of magnitude: 4.978611e-05
+Algorithm took 2042 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 360 -k 10 -o 4
+GMRES Algorithm finished in 939 iterations with convergence flag set to 1 and a residual of magnitude: 5.004982e-05
+Algorithm took 2059 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 370 -k 10 -o 4
+GMRES Algorithm finished in 893 iterations with convergence flag set to 1 and a residual of magnitude: 4.997339e-05
+Algorithm took 2035 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 380 -k 10 -o 4
+GMRES Algorithm finished in 867 iterations with convergence flag set to 1 and a residual of magnitude: 4.980658e-05
+Algorithm took 1913 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 390 -k 10 -o 4
+GMRES Algorithm finished in 879 iterations with convergence flag set to 1 and a residual of magnitude: 4.949428e-05
+Algorithm took 2005 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 400 -k 10 -o 4
+GMRES Algorithm finished in 862 iterations with convergence flag set to 1 and a residual of magnitude: 4.969736e-05
+Algorithm took 2235 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 410 -k 10 -o 4
+GMRES Algorithm finished in 844 iterations with convergence flag set to 1 and a residual of magnitude: 4.977047e-05
+Algorithm took 2154 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 420 -k 10 -o 4
+GMRES Algorithm finished in 832 iterations with convergence flag set to 1 and a residual of magnitude: 4.963823e-05
+Algorithm took 2030 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 430 -k 10 -o 4
+GMRES Algorithm finished in 838 iterations with convergence flag set to 1 and a residual of magnitude: 4.931909e-05
+Algorithm took 2178 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 440 -k 10 -o 4
+GMRES Algorithm finished in 842 iterations with convergence flag set to 1 and a residual of magnitude: 5.006215e-05
+Algorithm took 2080 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 450 -k 10 -o 4
+GMRES Algorithm finished in 845 iterations with convergence flag set to 1 and a residual of magnitude: 5.002275e-05
+Algorithm took 2183 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 460 -k 10 -o 4
+GMRES Algorithm finished in 852 iterations with convergence flag set to 1 and a residual of magnitude: 4.933213e-05
+Algorithm took 2241 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 470 -k 10 -o 4
+GMRES Algorithm finished in 856 iterations with convergence flag set to 1 and a residual of magnitude: 4.975846e-05
+Algorithm took 2236 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 480 -k 10 -o 4
+GMRES Algorithm finished in 857 iterations with convergence flag set to 1 and a residual of magnitude: 4.939523e-05
+Algorithm took 2336 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 490 -k 10 -o 4
+GMRES Algorithm finished in 845 iterations with convergence flag set to 1 and a residual of magnitude: 4.988928e-05
+Algorithm took 2215 milliseconds
+
+./build/krylov.exe -m import -n 16384 -i 16384 -r 500 -k 10 -o 4
+GMRES Algorithm finished in 800 iterations with convergence flag set to 1 and a residual of magnitude: 4.973925e-05
+Algorithm took 2277 milliseconds
+

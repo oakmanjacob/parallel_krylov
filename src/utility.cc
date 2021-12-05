@@ -259,13 +259,16 @@ double dot_simd(const vector<double> &first, const vector<double> &second) {
     double sum = 0;
     size_t i = 0;
     __m256d result = _mm256_setr_pd(0,0,0,0);
+
+    // Calculate dot product for elements in chunks of 4
     for (; i + 4 < first.size(); i += 4) {
-        result = _mm256_hadd_pd(result, _mm256_mul_pd(_mm256_loadu_pd(&first[i]), _mm256_loadu_pd(&second[i])));
+        result = _mm256_add_pd(result, _mm256_mul_pd(_mm256_loadu_pd(&first[i]), _mm256_loadu_pd(&second[i])));
     }
 
     result = _mm256_hadd_pd(result, result);
     sum += ((double*)&result)[0] + ((double*)&result)[2];
 
+    // Complete additional elements which can't be put into a chunk of 4
     for (; i < first.size(); i++) {
         sum += first[i] * second[i];
     }

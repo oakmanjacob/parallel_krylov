@@ -129,3 +129,14 @@ This paper looks at several different implementations of GMRES on CPU and GPUs. 
 ### [3] David’s Palitta and Valeria Simoncini. “Matrix-Equation-Based Strategies for Convection-Diffusion Equations” arXiv https://arxiv.org/abs/1501.02920 (2015)
 
 This paper looks at how Convection-Diffusion equations can be solved using linear equations. It should be a good resource in understanding how this project relates to its application and may provide some insight into the underlying properties of the matrices involved in these problems.
+
+### [4] Y. Saad and M. H. Schultz, "GMRES: A generalized minimal residual algorithm for solving nonsymmetric linear systems", SIAM J. Sci. Stat. Comput., vol. 7, no. 3, pp. 856-869, 1986.
+
+### [5] Arielle Carr, “Recycling Techniques for Sequences of Linear Systems and Eigenproblems”, Dissertation submitted to the Faculty of the Virginia Polytechnic Institute and State University, http://hdl.handle.net/10919/104143
+
+### [6] Ronald B. Morgan, “A Restarted GMRES Method Augmented with Eigenvectors” SIAM J. Matrix Anal. Appl., 16(4), 1154–1171. https://epubs.siam.org/doi/10.1137/S0895479893253975
+
+### [7] Chow, E., Frommer, A. & Szyld, D.B. Asynchronous Richardson iterations: theory and practice. Numer Algor 87, 1635–1651 (2021). https://doi.org/10.1007/s11075-020-01023-3
+
+### [8] Xijian Wang, “Comparison of Fixed Point Methods and Krylov Subspace Methods Solving Convection-Diffusion Equations.” American Journal of Computational Mathematics, (2015) 5, 113-126
+
